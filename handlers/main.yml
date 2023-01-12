@@ -1,0 +1,16 @@
+---
+# Handlers
+
+- name: Restart Grafana
+  become: true
+  service:
+    name: grafana-server
+    enabled: yes
+    state: restarted
+
+- name: Restart Prometheus
+  become: true
+  service:
+    name: prometheus
+    enabled: yes
+    state: restarted

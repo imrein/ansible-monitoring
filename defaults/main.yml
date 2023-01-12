@@ -1,0 +1,21 @@
+---
+# Default values
+
+# General
+hostname: grafana-server
+prometheus_user: prometheus
+
+# Network
+static_ip_enabled: false
+static_ip_addr: "192.168.1.50"
+static_ip_gateway: "192.168.1.254"
+dns_servers: "192.168.1.1,8.8.8.8"
+ipv4_interface: ens33
+
+# Packages
+packages:
+  - grafana
+  - tar
+  - wget
+
+prometheus_version: 2.41.0
