@@ -102,16 +102,6 @@
   systemd:
     daemon_reload: yes
 
-# - name: Start grafana + prometheus
-#   become: true
-#   systemd:
-#     name: "{{ item }}"
-#     state: restarted
-#     enabled: yes
-#   loop:
-#     - grafana-server
-#     - prometheus
-
 - name: Cleanup obsolete files
   file:
     path: "{{ item }}"
