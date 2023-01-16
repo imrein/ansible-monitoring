@@ -102,15 +102,15 @@
   systemd:
     daemon_reload: yes
 
-- name: Start grafana + prometheus
-  become: true
-  systemd:
-    name: "{{ item }}"
-    state: restarted
-    enabled: yes
-  loop:
-    - grafana-server
-    - prometheus
+# - name: Start grafana + prometheus
+#   become: true
+#   systemd:
+#     name: "{{ item }}"
+#     state: restarted
+#     enabled: yes
+#   loop:
+#     - grafana-server
+#     - prometheus
 
 - name: Cleanup obsolete files
   file:
@@ -131,3 +131,7 @@
   loop:
     - 3000/tcp
     - 9090/tcp
+  notify:
+    - Reload firewalld
+    - Restart Grafana
+    - Restart Prometheus

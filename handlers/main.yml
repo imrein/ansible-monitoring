@@ -14,3 +14,9 @@
     name: prometheus
     enabled: yes
     state: restarted
+
+- name: Reload firewalld
+  become: true
+  service:
+    name: firewalld
+    state: reloaded
