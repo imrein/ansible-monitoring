@@ -11,9 +11,13 @@ An `AlmaLinux 9.0` node.
 The variables are defined in `defaults/main.yml`. These should be configured as needed:
 
 - `hostname`
-- `prometheus_user`
 - `packages`
+- `prometheus_user`
+- `prometheus_download_location`
 - `prometheus_version`
+- `node_exporter_user`
+- `exporter_download_location`
+- `exporter_version`
 
 ## Warnings
 

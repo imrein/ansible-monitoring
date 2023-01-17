@@ -109,7 +109,7 @@
     - name: Create node_exporter user
       become: true
       user:
-        name: "{{ node_exporter_user }}"
+        name: "{{ exporter_user }}"
         shell: /usr/bin/false
         create_home: false
 
