@@ -4,6 +4,7 @@
 # General
 hostname: grafana-server
 prometheus_user: prometheus
+node_exporter_user: node_exporter
 
 # Packages
 packages:

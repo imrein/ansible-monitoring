@@ -19,83 +19,89 @@
     name: "{{ packages }}"
     state: latest
 
+- name: Populate service facts
+  service_facts:
+
 # Installing prometheus
-- name: Create prometheus user
-  become: true
-  user:
-    name: "{{ prometheus_user }}"
-    shell: /usr/bin/false
-    create_home: false
+- name: Install, configure and start Prometheus
+  block:
+    - name: Create prometheus user
+      become: true
+      user:
+        name: "{{ prometheus_user }}"
+        shell: /usr/bin/false
+        create_home: false
 
-- name: Create prometheus directories
-  become: true
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ prometheus_user }}"
-    group: "{{ prometheus_user }}"
-  loop:
-   - /etc/prometheus
-   - /var/lib/prometheus
+    - name: Create prometheus directories
+      become: true
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ prometheus_user }}"
+        group: "{{ prometheus_user }}"
+      loop:
+      - /etc/prometheus
+      - /var/lib/prometheus
 
-- name: Download prometheus
-  get_url:
-    url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-    dest: "{{ prometheus_download_location }}"
+    - name: Download prometheus
+      get_url:
+        url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+        dest: "{{ prometheus_download_location }}"
 
-- name: Untar prometheus
-  unarchive:
-    src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-    remote_src: true
-    dest: "{{ prometheus_download_location }}"
+    - name: Untar prometheus
+      unarchive:
+        src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+        remote_src: true
+        dest: "{{ prometheus_download_location }}"
 
-- name: Copy prometheus binary
-  become: true
-  copy:
-    src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
-    remote_src: true
-    dest: /usr/local/bin/
-    mode: '0755'
-  
-- name: Copy promtool binary
-  become: true
-  copy:
-    src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
-    remote_src: true
-    dest: /usr/local/bin/
-    mode: '0755'
+    - name: Copy prometheus binary
+      become: true
+      copy:
+        src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
+        remote_src: true
+        dest: /usr/local/bin/
+        mode: '0755'
+      
+    - name: Copy promtool binary
+      become: true
+      copy:
+        src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
+        remote_src: true
+        dest: /usr/local/bin/
+        mode: '0755'
 
-- name: Copy consoles to prometheus directory
-  become: true
-  copy:
-    src: "{{ item }}"
-    remote_src: true
-    dest: /etc/prometheus/
-    owner: "{{ prometheus_user }}"
-    group: "{{ prometheus_user }}"
-  loop:
-    - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/consoles"
-    - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries"
+    - name: Copy consoles to prometheus directory
+      become: true
+      copy:
+        src: "{{ item }}"
+        remote_src: true
+        dest: /etc/prometheus/
+        owner: "{{ prometheus_user }}"
+        group: "{{ prometheus_user }}"
+      loop:
+        - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/consoles"
+        - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries"
 
-- name: Create config file
-  become: true
-  copy:
-    src: prometheus.yml
-    dest: /etc/prometheus/prometheus.yml
-    owner: "{{ prometheus_user }}"
-    group: "{{ prometheus_user }}"
+    - name: Create config file
+      become: true
+      copy:
+        src: prometheus.yml
+        dest: /etc/prometheus/prometheus.yml
+        owner: "{{ prometheus_user }}"
+        group: "{{ prometheus_user }}"
 
-- name: Create datasource prometheus
-  become: true
-  copy:
-    src: prometheus_datasource.yml
-    dest: /etc/grafana/provisioning/datasources/sample.yaml
+    - name: Create datasource prometheus
+      become: true
+      copy:
+        src: prometheus_datasource.yml
+        dest: /etc/grafana/provisioning/datasources/sample.yaml
 
-- name: Create systemd service for prometheus
-  become: true
-  copy:
-    src: prometheus.service
-    dest: /etc/systemd/system/prometheus.service
+    - name: Create systemd service for prometheus
+      become: true
+      copy:
+        src: prometheus.service
+        dest: /etc/systemd/system/prometheus.service
+  when: "'prometheus' in services"
 
 # Installing node_exporter
 - name: Download node_exporter
