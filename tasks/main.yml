@@ -101,34 +101,45 @@
       copy:
         src: prometheus.service
         dest: /etc/systemd/system/prometheus.service
-  when: "'prometheus' in services"
+  when: ansible_facts.services["prometheus.service"] is not defined
 
 # Installing node_exporter
-- name: Download node_exporter
-  get_url:
-    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ exporter_version }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-    dest: "{{ exporter_download_location }}"
+- name: Install, configure and start node_exporter
+  block:
+    - name: Create node_exporter user
+      become: true
+      user:
+        name: "{{ node_exporter_user }}"
+        shell: /usr/bin/false
+        create_home: false
 
-- name: Untar node_exporter
-  unarchive:
-    src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-    remote_src: true
-    dest: "{{ exporter_download_location }}"
+    - name: Download node_exporter
+      get_url:
+        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ exporter_version }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
+        dest: "{{ exporter_download_location }}"
 
-- name: Copy node_exporter binary
-  become: true
-  copy: 
-    src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
-    remote_src: true
-    dest: /usr/local/bin/
-    mode: '0755'
+    - name: Untar node_exporter
+      unarchive:
+        src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
+        remote_src: true
+        dest: "{{ exporter_download_location }}"
 
-- name: Create systemd service for node_exporter
-  become: true
-  copy:
-    src: node_exporter.service
-    dest: /etc/systemd/system/node_exporter.service
+    - name: Copy node_exporter binary
+      become: true
+      copy: 
+        src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
+        remote_src: true
+        dest: /usr/local/bin/
+        mode: '0755'
 
+    - name: Create systemd service for node_exporter
+      become: true
+      copy:
+        src: node_exporter.service
+        dest: /etc/systemd/system/node_exporter.service
+  when: ansible_facts.services["node_exporter.service"] is not defined
+
+# Post installation
 - name: Reload systemd config
   become: true
   systemd:
