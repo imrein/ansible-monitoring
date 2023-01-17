@@ -18,7 +18,7 @@
 - name: Restart Node_exporter
   become: true
   service:
-    name: node-exporter
+    name: node_exporter
     enabled: yes
     state: restarted
 
