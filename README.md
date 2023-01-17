@@ -1,6 +1,6 @@
-# Grafana + Prometheus ansible setup
+# Grafana, Prometheus & Node_exporter ansible setup
 
-Simple role to setup a new Grafana + Prometheus server. This has only been tested on an AlmaLinux 9.0 for now. This is still WIP and will be tweaked in the future.
+Simple role to setup a new Grafana & Prometheus server with a node_exporter. This has only been tested on an AlmaLinux 9.0 for now. This is still WIP and will be tweaked in the future.
 
 ## Requirements
 
@@ -15,7 +15,7 @@ The variables are defined in `defaults/main.yml`. These should be configured as 
 - `prometheus_user`
 - `prometheus_download_location`
 - `prometheus_version`
-- `node_exporter_user`
+- `exporter_user`
 - `exporter_download_location`
 - `exporter_version`
 
