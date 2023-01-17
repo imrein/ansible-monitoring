@@ -41,18 +41,18 @@
 - name: Download prometheus
   get_url:
     url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-    dest: /home/rein/
+    dest: "{{ prometheus_download_location }}"
 
 - name: Untar prometheus
   unarchive:
-    src: "/home/rein/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+    src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
     remote_src: true
-    dest: /home/rein
+    dest: "{{ prometheus_download_location }}"
 
 - name: Copy prometheus binary
   become: true
   copy:
-    src: /home/rein/prometheus-{{ prometheus_version }}.linux-amd64/prometheus
+    src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
     remote_src: true
     dest: /usr/local/bin/
     mode: '0755'
@@ -60,7 +60,7 @@
 - name: Copy promtool binary
   become: true
   copy:
-    src: /home/rein/prometheus-{{ prometheus_version }}.linux-amd64/promtool
+    src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
     remote_src: true
     dest: /usr/local/bin/
     mode: '0755'
@@ -74,8 +74,8 @@
     owner: "{{ prometheus_user }}"
     group: "{{ prometheus_user }}"
   loop:
-    - /home/rein/prometheus-{{ prometheus_version }}.linux-amd64/consoles
-    - /home/rein/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries
+    - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/consoles"
+    - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries"
 
 - name: Create config file
   become: true
@@ -97,6 +97,32 @@
     src: prometheus.service
     dest: /etc/systemd/system/prometheus.service
 
+# Installing node_exporter
+- name: Download node_exporter
+  get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ exporter_version }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
+    dest: "{{ exporter_download_location }}"
+
+- name: Untar node_exporter
+  unarchive:
+    src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
+    remote_src: true
+    dest: "{{ exporter_download_location }}"
+
+- name: Copy node_exporter binary
+  become: true
+  copy: 
+    src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
+    remote_src: true
+    dest: /usr/local/bin/
+    mode: '0755'
+
+- name: Create systemd service for node_exporter
+  become: true
+  copy:
+    src: node_exporter.service
+    dest: /etc/systemd/system/node_exporter.service
+
 - name: Reload systemd config
   become: true
   systemd:
@@ -107,8 +133,10 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - /home/rein/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
-    - /home/rein/prometheus-{{ prometheus_version }}.linux-amd64
+    - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+    - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64"
+    - "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
+    - "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64"
 
 # Edit firewall rules
 - name: Allow incoming traffic on port 3000 & 9090
@@ -121,7 +149,9 @@
   loop:
     - 3000/tcp
     - 9090/tcp
+    - 9100/tcp
   notify:
     - Reload firewalld
     - Restart Grafana
     - Restart Prometheus
+    - Restart Node_exporter

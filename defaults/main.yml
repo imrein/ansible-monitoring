@@ -11,4 +11,9 @@ packages:
   - tar
   - wget
 
+# Prometheus
+prometheus_download_location: /tmp
 prometheus_version: 2.41.0
+
+exporter_download_location: /tmp
+exporter_version: 1.5.0
