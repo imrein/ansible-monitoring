@@ -156,7 +156,7 @@
     - "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64"
 
 # Edit firewall rules
-- name: Allow incoming traffic on port 3000 & 9090
+- name: Allow incoming traffic on port 3000, 9090 & 9100
   become: true
   firewalld:
     port: "{{ item }}"
