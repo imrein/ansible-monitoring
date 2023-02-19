@@ -1,10 +1,13 @@
 # Grafana, Prometheus & Node_exporter ansible setup
 
-Simple role to setup a new Grafana & Prometheus server with a node_exporter. This has only been tested on an AlmaLinux 9.0 for now. This is still WIP and will be tweaked in the future.
+Simple role to setup a new Grafana & Prometheus server with a node_exporter. This has only been tested on:
+
+- AlmaLinux 9.0
+- AlmaLinux 9.1
 
 ## Requirements
 
-An `AlmaLinux 9.0` node.
+Minimum `AlmaLinux 9.0` node.
 
 ## Role Variables
 
