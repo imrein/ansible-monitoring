@@ -1,0 +1,12 @@
+[Unit]
+Description=Loki
+After=network.target
+
+[Service]
+User=loki
+Group=loki
+Type=simple
+ExecStart=/usr/local/bin/loki-linux-amd64 -config.file /etc/loki/config-loki.yml
+
+[Install]
+WantedBy=multi-user.target

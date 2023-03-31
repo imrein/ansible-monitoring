@@ -21,6 +21,13 @@
     enabled: yes
     state: restarted
 
+- name: Restart Loki
+  become: true
+  service:
+    name: loki
+    enabled: yes
+    state: restarted
+
 - name: Reload firewalld
   become: true
   service:

@@ -6,6 +6,7 @@ hostname: grafana-server
 packages:
   - tar
   - wget
+  - unzip
 
 # Grafana
 grafana_install: true
@@ -22,3 +23,15 @@ exporter_install: true
 exporter_user: node_exporter
 exporter_download_location: /tmp
 exporter_version: 1.5.0
+
+# Loki
+loki_install: true
+loki_user: loki
+loki_download_location: /tmp
+loki_version: 2.7.5
+
+# Promtail
+promtail_install: true
+promtail_user: promtail
+promtail_download_location: /tmp
+promtail_version: 2.7.5

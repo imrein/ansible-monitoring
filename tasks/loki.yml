@@ -1,0 +1,79 @@
+---
+# Installing loki & promtail
+- name: Install loki if not installed
+  block:
+    - name: Create loki user
+      become: true
+      user:
+        name: "{{ loki_user }}"
+        shell: /usr/bin/false
+        create_home: false
+
+    - name: Create loki directory
+      become: true
+      file:
+        path: /etc/loki
+        state: directory
+        owner: "{{ loki_user }}"
+        group: "{{ loki_user }}"
+
+    - name: Download loki
+      get_url:
+        url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
+        dest: "{{ loki_download_location }}"
+
+    - name: Untar node_exporter
+      unarchive:
+        src: "{{ loki_download_location }}/loki-linux-amd64.zip"
+        remote_src: true
+        dest: "{{ loki_download_location }}"
+
+    - name: Copy loki binary
+      become: true
+      copy:
+        src: "{{ loki_download_location }}/loki-linux-amd64"
+        remote_src: true
+        dest: /usr/local/bin/
+        mode: '0755'
+
+    - name: Create config file
+      become: true
+      copy:
+        src: config-loki.yml
+        dest: /etc/loki/config-loki.yml
+        owner: "{{ loki_user }}"
+        group: "{{ loki_user }}"
+
+    - name: Create systemd service for loki
+      become: true
+      copy:
+        src: loki.service
+        dest: /etc/systemd/system/loki.service
+
+    # Post installation
+    - name: Reload systemd config
+      become: true
+      systemd:
+        daemon_reload: yes
+
+    - name: Cleanup obsolete files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ loki_download_location }}/loki-linux-amd64.zip"
+        - "{{ loki_download_location }}/loki-linux-amd64"
+
+    # Edit firewall rules
+    - name: Allow incoming traffic on port 9090
+      become: true
+      firewalld:
+        port: 3100/tcp
+        permanent: yes
+        immediate: yes
+        state: enabled
+      notify:
+        - Reload firewalld
+        - Restart Loki
+
+  when: loki_install and ansible_facts.services["loki.service"] is not defined

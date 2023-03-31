@@ -28,3 +28,6 @@
 
 - name: Install node_exporter
   import_tasks: node_exporter.yml
+
+- name: Install loki
+  import_tasks: loki.yml
