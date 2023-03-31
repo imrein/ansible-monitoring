@@ -17,12 +17,12 @@ The variables are defined in `defaults/main.yml`. These should be configured as 
 | :------- | :------ | :--- |
 | `hostname`                      | `grafana-server` | Hostname of the system                            |
 | `packages`                      | `[]`             | General packages that should be installed         |
-|          |         |      |
+| ---      |         |      |
 | `prometheus_install`            | `true`           | Should prometheus be installed?                   |
 | `prometheus_user`               | `prometheus`     | User for prometheus installation                  |
 | `prometheus_download_location`  | `/tmp`           | Download location                                 |
 | `prometheus_version`            | `2.41.0`         | Version that should be installed                  |
-|          |         |      |
+| ---      |         |      |
 | `exporter_install`            | `true`             | Should node_exporter be installed?                |
 | `exporter_user`               | `node_exporter`    | User for node_exporter installation               |
 | `exporter_download_location`  | `/tmp`             | Download location                                 |
