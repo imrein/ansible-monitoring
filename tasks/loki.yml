@@ -22,7 +22,7 @@
         url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
         dest: "{{ loki_download_location }}"
 
-    - name: Untar node_exporter
+    - name: Untar loki
       unarchive:
         src: "{{ loki_download_location }}/loki-linux-amd64.zip"
         remote_src: true

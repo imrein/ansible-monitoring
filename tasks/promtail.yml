@@ -22,7 +22,7 @@
         url: "https://github.com/grafana/loki/releases/download/v{{ promtail_version }}/promtail-linux-amd64.zip"
         dest: "{{ promtail_download_location }}"
 
-    - name: Untar node_exporter
+    - name: Untar promtail
       unarchive:
         src: "{{ promtail_download_location }}/promtail-linux-amd64.zip"
         remote_src: true
