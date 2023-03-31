@@ -28,6 +28,13 @@
     enabled: yes
     state: restarted
 
+- name: Restart Promtail
+  become: true
+  service:
+    name: promtail
+    enabled: yes
+    state: restarted
+
 - name: Reload firewalld
   become: true
   service:

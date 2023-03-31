@@ -31,3 +31,6 @@
 
 - name: Install loki
   import_tasks: loki.yml
+
+- name: Install Promtail
+  import_tasks: promtail.yml

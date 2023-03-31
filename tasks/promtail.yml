@@ -1,0 +1,79 @@
+---
+# Installing promtail
+- name: Install promtail if not installed
+  block:
+    - name: Create promtail user
+      become: true
+      user:
+        name: "{{ promtail_user }}"
+        shell: /usr/bin/false
+        create_home: false
+
+    - name: Create promtail directory
+      become: true
+      file:
+        path: /etc/promtail
+        state: directory
+        owner: "{{ promtail_user }}"
+        group: "{{ promtail_user }}"
+
+    - name: Download promtail
+      get_url:
+        url: "https://github.com/grafana/loki/releases/download/v{{ promtail_version }}/promtail-linux-amd64.zip"
+        dest: "{{ promtail_download_location }}"
+
+    - name: Untar node_exporter
+      unarchive:
+        src: "{{ promtail_download_location }}/promtail-linux-amd64.zip"
+        remote_src: true
+        dest: "{{ promtail_download_location }}"
+
+    - name: Copy promtail binary
+      become: true
+      copy:
+        src: "{{ promtail_download_location }}/promtail-linux-amd64"
+        remote_src: true
+        dest: /usr/local/bin/promtail
+        mode: '0755'
+
+    - name: Create config file
+      become: true
+      copy:
+        src: promtail.yml
+        dest: /etc/promtail/promtail.yml
+        owner: "{{ promtail_user }}"
+        group: "{{ promtail_user }}"
+
+    - name: Create systemd service for promtail
+      become: true
+      copy:
+        src: promtail.service
+        dest: /etc/systemd/system/promtail.service
+
+    # Post installation
+    - name: Reload systemd config
+      become: true
+      systemd:
+        daemon_reload: yes
+
+    - name: Cleanup obsolete files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ promtail_download_location }}/promtail-linux-amd64.zip"
+        - "{{ promtail_download_location }}/promtail-linux-amd64"
+
+    # Edit firewall rules
+    - name: Allow incoming traffic on port 9080
+      become: true
+      firewalld:
+        port: 9080/tcp
+        permanent: yes
+        immediate: yes
+        state: enabled
+      notify:
+        - Reload firewalld
+        - Restart Promtail
+
+  when: promtail_install and ansible_facts.services["promtail.service"] is not defined

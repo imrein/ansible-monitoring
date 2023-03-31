@@ -1,5 +1,5 @@
 ---
-# Installing loki & promtail
+# Installing loki
 - name: Install loki if not installed
   block:
     - name: Create loki user
@@ -33,14 +33,14 @@
       copy:
         src: "{{ loki_download_location }}/loki-linux-amd64"
         remote_src: true
-        dest: /usr/local/bin/
+        dest: /usr/local/bin/loki
         mode: '0755'
 
     - name: Create config file
       become: true
       copy:
-        src: config-loki.yml
-        dest: /etc/loki/config-loki.yml
+        src: loki.yml
+        dest: /etc/loki/loki.yml
         owner: "{{ loki_user }}"
         group: "{{ loki_user }}"
 
@@ -65,7 +65,7 @@
         - "{{ loki_download_location }}/loki-linux-amd64"
 
     # Edit firewall rules
-    - name: Allow incoming traffic on port 9090
+    - name: Allow incoming traffic on port 3100
       become: true
       firewalld:
         port: 3100/tcp

@@ -2,6 +2,7 @@
 Description=Prometheus
 Wants=network-online.target
 After=network-online.target
+
 [Service]
 User=prometheus
 Group=prometheus
@@ -11,5 +12,6 @@ ExecStart=/usr/local/bin/prometheus \
 --storage.tsdb.path /var/lib/prometheus/ \
 --web.console.templates=/etc/prometheus/consoles \
 --web.console.libraries=/etc/prometheus/console_libraries
+
 [Install]
 WantedBy=multi-user.target
