@@ -44,7 +44,7 @@ The variables are defined in `defaults/main.yml`. These should be configured as 
 | `promtail_install`              | `true`           | Should promtail be installed?                     |
 | `promtail_user`                 | `promtail`       | User for promtail installation                    |
 | `promtail_download_location`    | `/tmp`           | Download location                                 |
-| `promtail_version`              | `1.5.0`          | Version that should be installed                  |
+| `promtail_version`              | `2.7.5`          | Version that should be installed                  |
 
 ## Warnings
 
