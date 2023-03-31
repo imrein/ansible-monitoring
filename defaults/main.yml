@@ -1,21 +1,24 @@
 ---
-# Default values
-
 # General
 hostname: grafana-server
 
 # Packages
 packages:
-  - grafana
   - tar
   - wget
 
+# Grafana
+grafana_install: true
+grafana_package: grafana
+
 # Prometheus
+prometheus_install: true
 prometheus_user: prometheus
 prometheus_download_location: /tmp
 prometheus_version: 2.41.0
 
 # Node_exporter
+exporter_install: true
 exporter_user: node_exporter
 exporter_download_location: /tmp
 exporter_version: 1.5.0

@@ -1,6 +1,5 @@
 ---
 # Handlers
-
 - name: Restart Grafana
   become: true
   service:

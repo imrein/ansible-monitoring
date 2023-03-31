@@ -1,11 +1,15 @@
 ---
-# Tasks
-
 # General
 - name: Update system
   become: true
   dnf:
     name: "*"
+    state: latest
+
+- name: Install base packages
+  become: true
+  dnf:
+    name: "{{ packages }}"
     state: latest
   
 - name: Set hostname
@@ -13,162 +17,14 @@
   hostname:
     name: "{{ hostname }}"
 
-- name: Install Packages
-  become: true
-  dnf:
-    name: "{{ packages }}"
-    state: latest
-
 - name: Populate service facts
   service_facts:
 
-# Installing prometheus
-- name: Install, configure and start Prometheus
-  block:
-    - name: Create prometheus user
-      become: true
-      user:
-        name: "{{ prometheus_user }}"
-        shell: /usr/bin/false
-        create_home: false
+- name: Install grafana
+  import_tasks: grafana.yml
 
-    - name: Create prometheus directories
-      become: true
-      file:
-        path: "{{ item }}"
-        state: directory
-        owner: "{{ prometheus_user }}"
-        group: "{{ prometheus_user }}"
-      loop:
-      - /etc/prometheus
-      - /var/lib/prometheus
+- name: Install prometheus
+  import_tasks: prometheus.yml
 
-    - name: Download prometheus
-      get_url:
-        url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-        dest: "{{ prometheus_download_location }}"
-
-    - name: Untar prometheus
-      unarchive:
-        src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-        remote_src: true
-        dest: "{{ prometheus_download_location }}"
-
-    - name: Copy prometheus binary
-      become: true
-      copy:
-        src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
-        remote_src: true
-        dest: /usr/local/bin/
-        mode: '0755'
-      
-    - name: Copy promtool binary
-      become: true
-      copy:
-        src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
-        remote_src: true
-        dest: /usr/local/bin/
-        mode: '0755'
-
-    - name: Copy consoles to prometheus directory
-      become: true
-      copy:
-        src: "{{ item }}"
-        remote_src: true
-        dest: /etc/prometheus/
-        owner: "{{ prometheus_user }}"
-        group: "{{ prometheus_user }}"
-      loop:
-        - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/consoles"
-        - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries"
-
-    - name: Create config file
-      become: true
-      copy:
-        src: prometheus.yml
-        dest: /etc/prometheus/prometheus.yml
-        owner: "{{ prometheus_user }}"
-        group: "{{ prometheus_user }}"
-
-    - name: Create datasource prometheus
-      become: true
-      copy:
-        src: prometheus_datasource.yml
-        dest: /etc/grafana/provisioning/datasources/sample.yaml
-
-    - name: Create systemd service for prometheus
-      become: true
-      copy:
-        src: prometheus.service
-        dest: /etc/systemd/system/prometheus.service
-  when: ansible_facts.services["prometheus.service"] is not defined
-
-# Installing node_exporter
-- name: Install, configure and start node_exporter
-  block:
-    - name: Create node_exporter user
-      become: true
-      user:
-        name: "{{ exporter_user }}"
-        shell: /usr/bin/false
-        create_home: false
-
-    - name: Download node_exporter
-      get_url:
-        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ exporter_version }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-        dest: "{{ exporter_download_location }}"
-
-    - name: Untar node_exporter
-      unarchive:
-        src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-        remote_src: true
-        dest: "{{ exporter_download_location }}"
-
-    - name: Copy node_exporter binary
-      become: true
-      copy: 
-        src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
-        remote_src: true
-        dest: /usr/local/bin/
-        mode: '0755'
-
-    - name: Create systemd service for node_exporter
-      become: true
-      copy:
-        src: node_exporter.service
-        dest: /etc/systemd/system/node_exporter.service
-  when: ansible_facts.services["node_exporter.service"] is not defined
-
-# Post installation
-- name: Reload systemd config
-  become: true
-  systemd:
-    daemon_reload: yes
-
-- name: Cleanup obsolete files
-  file:
-    path: "{{ item }}"
-    state: absent
-  loop:
-    - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-    - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64"
-    - "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-    - "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64"
-
-# Edit firewall rules
-- name: Allow incoming traffic on port 3000, 9090 & 9100
-  become: true
-  firewalld:
-    port: "{{ item }}"
-    permanent: yes
-    immediate: yes
-    state: enabled
-  loop:
-    - 3000/tcp
-    - 9090/tcp
-    - 9100/tcp
-  notify:
-    - Reload firewalld
-    - Restart Grafana
-    - Restart Prometheus
-    - Restart Node_exporter
+- name: Install node_exporter
+  import_tasks: node_exporter.yml
