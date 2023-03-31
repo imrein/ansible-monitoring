@@ -13,14 +13,20 @@ Minimum `AlmaLinux 9.0` node.
 
 The variables are defined in `defaults/main.yml`. These should be configured as needed:
 
-- `hostname`
-- `packages`
-- `prometheus_user`
-- `prometheus_download_location`
-- `prometheus_version`
-- `exporter_user`
-- `exporter_download_location`
-- `exporter_version`
+| Variable | Default | Info |
+| :------- | :------ | :--- |
+| `hostname`                      | `grafana-server` | Hostname of the system                            |
+| `packages`                      | `[]`             | General packages that should be installed         |
+|          |         |      |
+| `prometheus_install`            | `true`           | Should prometheus be installed?                   |
+| `prometheus_user`               | `prometheus`     | User for prometheus installation                  |
+| `prometheus_download_location`  | `/tmp`           | Download location                                 |
+| `prometheus_version`            | `2.41.0`         | Version that should be installed                  |
+|          |         |      |
+| `exporter_install`            | `true`             | Should node_exporter be installed?                |
+| `exporter_user`               | `node_exporter`    | User for node_exporter installation               |
+| `exporter_download_location`  | `/tmp`             | Download location                                 |
+| `exporter_version`            | `1.5.0`            | Version that should be installed                  |
 
 ## Warnings
 
