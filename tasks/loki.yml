@@ -20,18 +20,18 @@
     - name: Download loki
       get_url:
         url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
-        dest: "{{ loki_download_location }}"
+        dest: "{{ download_location }}"
 
     - name: Untar loki
       unarchive:
-        src: "{{ loki_download_location }}/loki-linux-amd64.zip"
+        src: "{{ download_location }}/loki-linux-amd64.zip"
         remote_src: true
-        dest: "{{ loki_download_location }}"
+        dest: "{{ download_location }}"
 
     - name: Copy loki binary
       become: true
       copy:
-        src: "{{ loki_download_location }}/loki-linux-amd64"
+        src: "{{ download_location }}/loki-linux-amd64"
         remote_src: true
         dest: /usr/local/bin/loki
         mode: '0755'
@@ -61,8 +61,8 @@
         path: "{{ item }}"
         state: absent
       loop:
-        - "{{ loki_download_location }}/loki-linux-amd64.zip"
-        - "{{ loki_download_location }}/loki-linux-amd64"
+        - "{{ download_location }}/loki-linux-amd64.zip"
+        - "{{ download_location }}/loki-linux-amd64"
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 3100

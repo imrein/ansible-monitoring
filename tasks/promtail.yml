@@ -20,18 +20,18 @@
     - name: Download promtail
       get_url:
         url: "https://github.com/grafana/loki/releases/download/v{{ promtail_version }}/promtail-linux-amd64.zip"
-        dest: "{{ promtail_download_location }}"
+        dest: "{{ download_location }}"
 
     - name: Untar promtail
       unarchive:
-        src: "{{ promtail_download_location }}/promtail-linux-amd64.zip"
+        src: "{{ download_location }}/promtail-linux-amd64.zip"
         remote_src: true
-        dest: "{{ promtail_download_location }}"
+        dest: "{{ download_location }}"
 
     - name: Copy promtail binary
       become: true
       copy:
-        src: "{{ promtail_download_location }}/promtail-linux-amd64"
+        src: "{{ download_location }}/promtail-linux-amd64"
         remote_src: true
         dest: /usr/local/bin/promtail
         mode: '0755'
@@ -61,8 +61,8 @@
         path: "{{ item }}"
         state: absent
       loop:
-        - "{{ promtail_download_location }}/promtail-linux-amd64.zip"
-        - "{{ promtail_download_location }}/promtail-linux-amd64"
+        - "{{ download_location }}/promtail-linux-amd64.zip"
+        - "{{ download_location }}/promtail-linux-amd64"
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 9080

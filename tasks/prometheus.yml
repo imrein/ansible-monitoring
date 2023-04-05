@@ -23,18 +23,18 @@
     - name: Download prometheus
       get_url:
         url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-        dest: "{{ prometheus_download_location }}"
+        dest: "{{ download_location }}"
 
     - name: Untar prometheus
       unarchive:
-        src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+        src: "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
         remote_src: true
-        dest: "{{ prometheus_download_location }}"
+        dest: "{{ download_location }}"
 
     - name: Copy prometheus binary
       become: true
       copy:
-        src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
+        src: "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
         remote_src: true
         dest: /usr/local/bin/
         mode: '0755'
@@ -42,7 +42,7 @@
     - name: Copy promtool binary
       become: true
       copy:
-        src: "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
+        src: "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
         remote_src: true
         dest: /usr/local/bin/
         mode: '0755'
@@ -56,8 +56,8 @@
         owner: "{{ prometheus_user }}"
         group: "{{ prometheus_user }}"
       loop:
-        - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/consoles"
-        - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries"
+        - "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/consoles"
+        - "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries"
 
     - name: Create config file
       become: true
@@ -90,8 +90,8 @@
         path: "{{ item }}"
         state: absent
       loop:
-        - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
-        - "{{ prometheus_download_location }}/prometheus-{{ prometheus_version }}.linux-amd64"
+        - "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+        - "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64"
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 9090

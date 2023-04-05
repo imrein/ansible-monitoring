@@ -12,18 +12,18 @@
     - name: Download node_exporter
       get_url:
         url: "https://github.com/prometheus/node_exporter/releases/download/v{{ exporter_version }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-        dest: "{{ exporter_download_location }}"
+        dest: "{{ download_location }}"
 
     - name: Untar node_exporter
       unarchive:
-        src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
+        src: "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
         remote_src: true
-        dest: "{{ exporter_download_location }}"
+        dest: "{{ download_location }}"
 
     - name: Copy node_exporter binary
       become: true
       copy: 
-        src: "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
+        src: "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
         remote_src: true
         dest: /usr/local/bin/
         mode: '0755'
@@ -45,8 +45,8 @@
         path: "{{ item }}"
         state: absent
       loop:
-        - "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-        - "{{ exporter_download_location }}/node_exporter-{{ exporter_version }}.linux-amd64"
+        - "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
+        - "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64"
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 9100
