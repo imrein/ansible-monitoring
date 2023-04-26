@@ -104,4 +104,6 @@
       notify:
         - Reload firewalld
         - Restart Prometheus
+      when: ansible_os_family == "RedHat"
+
   when: prometheus_install and ansible_facts.services["prometheus.service"] is not defined

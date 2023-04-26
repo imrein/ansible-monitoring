@@ -75,5 +75,6 @@
       notify:
         - Reload firewalld
         - Restart Promtail
+      when: ansible_os_family == "RedHat"
 
   when: promtail_install and ansible_facts.services["promtail.service"] is not defined

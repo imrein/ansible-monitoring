@@ -19,4 +19,6 @@
       notify:
         - Reload firewalld
         - Restart Grafana
+      when: ansible_os_family == "RedHat"
+      
   when: grafana_install and ansible_facts.services["grafana-server.service"] is not defined

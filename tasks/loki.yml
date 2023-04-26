@@ -75,5 +75,6 @@
       notify:
         - Reload firewalld
         - Restart Loki
+      when: ansible_os_family == "RedHat"
 
   when: loki_install and ansible_facts.services["loki.service"] is not defined

@@ -59,4 +59,5 @@
       notify:
         - Reload firewalld
         - Restart Node_exporter
+      when: ansible_os_family == "RedHat"
   when: exporter_install and ansible_facts.services["node_exporter.service"] is not defined
