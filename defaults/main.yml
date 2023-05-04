@@ -1,6 +1,5 @@
 ---
 # General
-hostname: grafana-server
 download_location: /tmp
 
 # Packages

@@ -11,11 +11,6 @@
   dnf:
     name: "{{ packages }}"
     state: latest
-  
-- name: Set hostname
-  become: true
-  hostname:
-    name: "{{ hostname }}"
 
 - name: Populate service facts
   service_facts:
