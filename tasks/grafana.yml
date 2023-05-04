@@ -16,9 +16,11 @@
         permanent: yes
         immediate: yes
         state: enabled
-      notify:
-        - Reload firewalld
-        - Restart Grafana
-      when: ansible_os_family == "RedHat"
+      notify: Reload firewalld
+      when: ansible_os_family == "RedHat" and ansible_facts.services["firewalld.service"] is defined
+
+    - name: Grafana enable + restart
+      command: /bin/true
+      notify: Restart Grafana
       
   when: grafana_install and ansible_facts.services["grafana-server.service"] is not defined

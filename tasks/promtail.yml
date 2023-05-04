@@ -72,9 +72,11 @@
         permanent: yes
         immediate: yes
         state: enabled
-      notify:
-        - Reload firewalld
-        - Restart Promtail
-      when: ansible_os_family == "RedHat"
+      notify: Reload firewalld
+      when: ansible_os_family == "RedHat" and ansible_facts.services["firewalld.service"] is defined
+
+    - name: Promtail enable + restart
+      command: /bin/true
+      notify: Restart Promtail
 
   when: promtail_install and ansible_facts.services["promtail.service"] is not defined

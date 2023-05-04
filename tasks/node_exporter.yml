@@ -56,8 +56,11 @@
         permanent: yes
         immediate: yes
         state: enabled
-      notify:
-        - Reload firewalld
-        - Restart Node_exporter
-      when: ansible_os_family == "RedHat"
+      notify: Reload firewalld
+      when: ansible_os_family == "RedHat" and ansible_facts.services["firewalld.service"] is defined
+
+    - name: Node_exporter enable + restart
+      command: /bin/true
+      notify: Restart Node_exporter
+
   when: exporter_install and ansible_facts.services["node_exporter.service"] is not defined
