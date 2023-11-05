@@ -78,5 +78,4 @@
     - name: Loki enable + restart
       command: /bin/true
       notify: Restart Loki
-
   when: loki_install and ansible_facts.services["loki.service"] is not defined

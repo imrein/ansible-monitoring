@@ -78,5 +78,4 @@
     - name: Promtail enable + restart
       command: /bin/true
       notify: Restart Promtail
-
   when: promtail_install and ansible_facts.services["promtail.service"] is not defined

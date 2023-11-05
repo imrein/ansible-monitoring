@@ -1,6 +1,6 @@
 ---
 # Installing grafana
-- name: Install grafana if not installed
+- name: Install grafana if not installed (RedHat)
   block:
     - name: Install grafana package
       become: true
@@ -17,10 +17,42 @@
         immediate: yes
         state: enabled
       notify: Reload firewalld
-      when: ansible_os_family == "RedHat" and ansible_facts.services["firewalld.service"] is defined
 
     - name: Grafana enable + restart
       command: /bin/true
       notify: Restart Grafana
-      
-  when: grafana_install and ansible_facts.services["grafana-server.service"] is not defined
+  when: ansible_os_family == "RedHat" and grafana_install and ansible_facts.services["grafana-server.service"] is not defined
+
+- name: Install grafana if not installed (Debian)
+  block:
+    - name: Create keyring directory
+      become: true
+      file:
+        path: /etc/apt/keyrings/
+        state: directory
+        mode: 0755
+
+    - name: Import GPG key
+      become: true
+      get_url:
+        url: https://apt.grafana.com/gpg.key
+        dest: /etc/apt/keyrings/grafana.asc
+        mode: 0644
+
+    - name: Add grafana repository
+      become: true
+      apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main"
+        state: present
+        update_cache: yes
+
+    - name: Install grafana package
+      become: true
+      apt:
+        name: "{{ grafana_package }}"
+        state: latest
+
+    - name: Grafana enable + restart
+      command: /bin/true
+      notify: Restart Grafana
+  when: ansible_os_family == "Debian" and grafana_install and ansible_facts.services["grafana-server.service"] is not defined

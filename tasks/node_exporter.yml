@@ -62,5 +62,4 @@
     - name: Node_exporter enable + restart
       command: /bin/true
       notify: Restart Node_exporter
-
   when: exporter_install and ansible_facts.services["node_exporter.service"] is not defined

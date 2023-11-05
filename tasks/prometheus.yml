@@ -107,5 +107,4 @@
     - name: Prometheus enable + restart
       command: /bin/true
       notify: Restart Prometheus
-
   when: prometheus_install and ansible_facts.services["prometheus.service"] is not defined
