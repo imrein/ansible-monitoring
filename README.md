@@ -19,7 +19,7 @@ This has been tested on:
 
 ## Requirements
 
-Minimum `AlmaLinux 9.0` node.
+A machine with an SSH connection.
 
 ## Role Variables
 
