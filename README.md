@@ -8,8 +8,9 @@ Role to setup a new monitoring server. This stack is modular and comes with:
 - Loki
 - Promtail
 
-This has only been tested on:
+This has been tested on:
 
+- AlmaLinux 8.8
 - AlmaLinux 9.0
 - AlmaLinux 9.1
 
@@ -55,5 +56,5 @@ The ports can also be changed for more security (might be a future variable).
   hosts: general
 
   roles:
-  - role: ansible-grafana
+  - role: ansible-monitoring
 ```
