@@ -3,7 +3,6 @@
 - name: Install, configure and start node_exporter
   block:
     - name: Create node_exporter user
-      become: true
       user:
         name: "{{ exporter_user }}"
         shell: /usr/bin/false
@@ -21,7 +20,6 @@
         dest: "{{ download_location }}"
 
     - name: Copy node_exporter binary
-      become: true
       copy: 
         src: "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
         remote_src: true
@@ -29,14 +27,12 @@
         mode: '0755'
 
     - name: Create systemd service for node_exporter
-      become: true
       copy:
         src: node_exporter.service
         dest: /etc/systemd/system/node_exporter.service
 
     # Post installation
     - name: Reload systemd config
-      become: true
       systemd:
         daemon_reload: yes
 
@@ -50,7 +46,6 @@
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 9100
-      become: true
       firewalld:
         port: 9100/tcp
         permanent: yes

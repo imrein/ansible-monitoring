@@ -1,42 +1,36 @@
 ---
 # Handlers
 - name: Restart Grafana
-  become: true
   service:
     name: grafana-server
     enabled: yes
     state: restarted
 
 - name: Restart Prometheus
-  become: true
   service:
     name: prometheus
     enabled: yes
     state: restarted
 
 - name: Restart Node_exporter
-  become: true
   service:
     name: node_exporter
     enabled: yes
     state: restarted
 
 - name: Restart Loki
-  become: true
   service:
     name: loki
     enabled: yes
     state: restarted
 
 - name: Restart Promtail
-  become: true
   service:
     name: promtail
     enabled: yes
     state: restarted
 
 - name: Reload firewalld
-  become: true
   service:
     name: firewalld
     state: reloaded

@@ -3,7 +3,6 @@
 - name: Install promtail if not installed
   block:
     - name: Create promtail user
-      become: true
       user:
         name: "{{ promtail_user }}"
         shell: /usr/bin/false
@@ -29,7 +28,6 @@
         dest: "{{ download_location }}"
 
     - name: Copy promtail binary
-      become: true
       copy:
         src: "{{ download_location }}/promtail-linux-amd64"
         remote_src: true
@@ -37,7 +35,6 @@
         mode: '0755'
 
     - name: Create config file
-      become: true
       copy:
         src: promtail.yml
         dest: /etc/promtail/promtail.yml
@@ -45,14 +42,12 @@
         group: "{{ promtail_user }}"
 
     - name: Create systemd service for promtail
-      become: true
       copy:
         src: promtail.service
         dest: /etc/systemd/system/promtail.service
 
     # Post installation
     - name: Reload systemd config
-      become: true
       systemd:
         daemon_reload: yes
 
@@ -66,7 +61,6 @@
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 9080
-      become: true
       firewalld:
         port: 9080/tcp
         permanent: yes

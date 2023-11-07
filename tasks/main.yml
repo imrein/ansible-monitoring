@@ -3,13 +3,11 @@
 - name: Update RedHat system
   block:
     - name: Update system
-      become: true
       dnf:
         name: "*"
         state: latest
 
     - name: Install base packages
-      become: true
       dnf:
         name: "{{ packages }}"
         state: latest
@@ -18,13 +16,11 @@
 - name: Update Debian system
   block:
     - name: Update system
-      become: true
       apt:
         name: "*"
         state: latest
 
     - name: Install base packages
-      become: true
       apt:
         name: "{{ packages }}"
         state: latest

@@ -3,14 +3,12 @@
 - name: Install loki if not installed
   block:
     - name: Create loki user
-      become: true
       user:
         name: "{{ loki_user }}"
         shell: /usr/bin/false
         create_home: false
 
     - name: Create loki directory
-      become: true
       file:
         path: /etc/loki
         state: directory
@@ -29,7 +27,6 @@
         dest: "{{ download_location }}"
 
     - name: Copy loki binary
-      become: true
       copy:
         src: "{{ download_location }}/loki-linux-amd64"
         remote_src: true
@@ -37,7 +34,6 @@
         mode: '0755'
 
     - name: Create config file
-      become: true
       copy:
         src: loki.yml
         dest: /etc/loki/loki.yml
@@ -45,14 +41,12 @@
         group: "{{ loki_user }}"
 
     - name: Create systemd service for loki
-      become: true
       copy:
         src: loki.service
         dest: /etc/systemd/system/loki.service
 
     # Post installation
     - name: Reload systemd config
-      become: true
       systemd:
         daemon_reload: yes
 
@@ -66,7 +60,6 @@
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 3100
-      become: true
       firewalld:
         port: 3100/tcp
         permanent: yes

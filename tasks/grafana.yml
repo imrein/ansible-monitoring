@@ -3,14 +3,12 @@
 - name: Install grafana if not installed (RedHat)
   block:
     - name: Install grafana package
-      become: true
       dnf:
         name: "{{ grafana_package }}"
         state: latest
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 3000
-      become: true
       firewalld:
         port: 3000/tcp
         permanent: yes
@@ -26,28 +24,24 @@
 - name: Install grafana if not installed (Debian)
   block:
     - name: Create keyring directory
-      become: true
       file:
         path: /etc/apt/keyrings/
         state: directory
         mode: 0755
 
     - name: Import GPG key
-      become: true
       get_url:
         url: https://apt.grafana.com/gpg.key
         dest: /etc/apt/keyrings/grafana.asc
         mode: 0644
 
     - name: Add grafana repository
-      become: true
       apt_repository:
         repo: "deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main"
         state: present
         update_cache: yes
 
     - name: Install grafana package
-      become: true
       apt:
         name: "{{ grafana_package }}"
         state: latest

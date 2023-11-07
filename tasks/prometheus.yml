@@ -3,14 +3,12 @@
 - name: Install prometheus if not installed
   block:
     - name: Create prometheus user
-      become: true
       user:
         name: "{{ prometheus_user }}"
         shell: /usr/bin/false
         create_home: false
 
     - name: Create prometheus directories
-      become: true
       file:
         path: "{{ item }}"
         state: directory
@@ -32,7 +30,6 @@
         dest: "{{ download_location }}"
 
     - name: Copy prometheus binary
-      become: true
       copy:
         src: "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
         remote_src: true
@@ -40,7 +37,6 @@
         mode: '0755'
       
     - name: Copy promtool binary
-      become: true
       copy:
         src: "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
         remote_src: true
@@ -48,7 +44,6 @@
         mode: '0755'
 
     - name: Copy consoles to prometheus directory
-      become: true
       copy:
         src: "{{ item }}"
         remote_src: true
@@ -60,7 +55,6 @@
         - "{{ download_location }}/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries"
 
     - name: Create config file
-      become: true
       copy:
         src: prometheus.yml
         dest: /etc/prometheus/prometheus.yml
@@ -68,20 +62,17 @@
         group: "{{ prometheus_user }}"
 
     - name: Create datasource prometheus
-      become: true
       copy:
         src: prometheus_datasource.yml
         dest: /etc/grafana/provisioning/datasources/sample.yaml
 
     - name: Create systemd service for prometheus
-      become: true
       copy:
         src: prometheus.service
         dest: /etc/systemd/system/prometheus.service
 
     # Post installation
     - name: Reload systemd config
-      become: true
       systemd:
         daemon_reload: yes
 
@@ -95,7 +86,6 @@
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 9090
-      become: true
       firewalld:
         port: 9090/tcp
         permanent: yes
