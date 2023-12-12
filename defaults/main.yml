@@ -15,19 +15,19 @@ grafana_package: grafana
 # Prometheus
 prometheus_install: true
 prometheus_user: prometheus
-prometheus_version: 2.47.2
+prometheus_version: 2.49.0
 
 # Node_exporter
 exporter_install: true
 exporter_user: node_exporter
-exporter_version: 1.6.1
+exporter_version: 1.7.0
 
 # Loki
 loki_install: true
 loki_user: loki
-loki_version: 2.9.2
+loki_version: 2.9.3
 
 # Promtail
 promtail_install: true
 promtail_user: promtail
-promtail_version: 2.9.2
+promtail_version: 2.9.3
