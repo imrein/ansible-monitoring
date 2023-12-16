@@ -66,7 +66,7 @@
         immediate: yes
         state: enabled
       notify: Reload firewalld
-      when: ansible_os_family == "RedHat" and ansible_facts.services["firewalld.service"] is defined
+      when: ansible_os_family == "RedHat" and ansible_facts.services["firewalld.service"].state == 'running'
 
     - name: Loki enable + restart
       command: /bin/true
