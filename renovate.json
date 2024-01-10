@@ -10,25 +10,25 @@
   "packageRules": [
     {
       "packageNames": ["node_exporter"],
-      "datasource": "github",
+      "datasource": "github-releases",
       "repositoryUrl": "https://github.com/prometheus/node_exporter",
       "versioning": "semver"
     },
     {
       "packageNames": ["grafana"],
-      "datasource": "github",
+      "datasource": "github-releases",
       "repositoryUrl": "https://github.com/grafana/grafana",
       "versioning": "semver"
     },
     {
       "packageNames": ["loki"],
-      "datasource": "github",
+      "datasource": "github-releases",
       "repositoryUrl": "https://github.com/grafana/loki",
       "versioning": "semver"
     },
     {
       "packageNames": ["prometheus"],
-      "datasource": "github",
+      "datasource": "github-releases",
       "repositoryUrl": "https://github.com/prometheus/prometheus",
       "versioning": "semver"
     }
