@@ -1,36 +1,10 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "ansible": {
-    "fileMatch": ["\\.yml$"]
-  },
-
-  "packageRules": [
+  "regexManagers": [
     {
-      "packageNames": ["node_exporter"],
-      "datasource": "github-releases",
-      "repositoryUrl": "https://github.com/prometheus/node_exporter",
-      "versioning": "semver"
-    },
-    {
-      "packageNames": ["grafana"],
-      "datasource": "github-releases",
-      "repositoryUrl": "https://github.com/grafana/grafana",
-      "versioning": "semver"
-    },
-    {
-      "packageNames": ["loki"],
-      "datasource": "github-releases",
-      "repositoryUrl": "https://github.com/grafana/loki",
-      "versioning": "semver"
-    },
-    {
-      "packageNames": ["prometheus"],
-      "datasource": "github-releases",
-      "repositoryUrl": "https://github.com/prometheus/prometheus",
-      "versioning": "semver"
+      "fileMatch": ["\\.yml$"],
+      "matchStrings": [
+        "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sprometheus_version: (?<currentValue>.*)\\s"
+      ]
     }
   ]
 }
