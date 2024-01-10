@@ -1,0 +1,13 @@
+{
+  "regexManagers": [
+    {
+      "fileMatch": ["\\.yml$"],
+      "matchStrings": [
+        "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sprometheus_version: (?<currentValue>.*)\\s",
+        "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sexporter_version: (?<currentValue>.*)\\s",
+        "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sloki_version: (?<currentValue>.*)\\s",
+        "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\spromtail_version: (?<currentValue>.*)\\s"
+      ]
+    }
+  ]
+}
