@@ -15,6 +15,7 @@
         immediate: yes
         state: enabled
       notify: Reload firewalld
+      when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
 
     - name: Grafana enable + restart
       command: /bin/true

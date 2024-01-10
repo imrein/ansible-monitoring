@@ -29,6 +29,9 @@
 - name: Populate service facts
   service_facts:
 
+- name: Populate package facts
+  package_facts:
+
 - name: Install grafana
   import_tasks: grafana.yml
 

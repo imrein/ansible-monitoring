@@ -16,19 +16,19 @@ grafana_package: grafana
 prometheus_install: true
 prometheus_user: prometheus
 # Renovate: datasource=github-tags depName=prometheus/prometheus
-prometheus_version: 2.45.2
+prometheus_version: v2.45.2
 
 # Node_exporter
 exporter_install: true
 exporter_user: node_exporter
-exporter_version: 1.7.0
+exporter_version: v1.7.0
 
 # Loki
 loki_install: true
 loki_user: loki
-loki_version: 2.9.3
+loki_version: v2.9.3
 
 # Promtail
 promtail_install: true
 promtail_user: promtail
-promtail_version: 2.9.3
+promtail_version: v2.9.3
