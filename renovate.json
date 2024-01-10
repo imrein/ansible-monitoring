@@ -2,5 +2,39 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "ansible": {
+    "fileMatch": ["\\.yml$"]
+  },
+
+  "packageRules": [
+    {
+      "packageNames": ["node_exporter"],
+      "datasource": "github",
+      "repositoryUrl": "https://github.com/prometheus/node_exporter",
+      "versioning": "semver",
+      "updateTypes": ["minor", "patch"]
+    },
+    {
+      "packageNames": ["grafana"],
+      "datasource": "github",
+      "repositoryUrl": "https://github.com/grafana/grafana",
+      "versioning": "semver",
+      "updateTypes": ["minor", "patch"]
+    },
+    {
+      "packageNames": ["loki"],
+      "datasource": "github",
+      "repositoryUrl": "https://github.com/grafana/loki",
+      "versioning": "semver",
+      "updateTypes": ["minor", "patch"]
+    },
+    {
+      "packageNames": ["prometheus"],
+      "datasource": "github",
+      "repositoryUrl": "https://github.com/prometheus/prometheus",
+      "versioning": "semver",
+      "updateTypes": ["minor", "patch"]
+    }
   ]
 }
