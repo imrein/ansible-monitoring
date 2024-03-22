@@ -10,9 +10,9 @@ Role to setup a new monitoring server. This stack is modular and comes with:
 
 This has been tested on:
 
-- AlmaLinux > `8.8` / `9.0` / `9.1`
-- Debian    > `11.8`
-- Ubuntu    > `20.04` / `22.04`
+- RHEL based distros
+- Debian
+- Ubuntu
 
 ## Requirements
 
