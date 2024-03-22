@@ -28,10 +28,10 @@ exporter_version: v1.7.0
 loki_install: true
 loki_user: loki
 # Renovate: datasource=github-tags depName=grafana/loki
-loki_version: v2.9.5
+loki_version: v2.9.6
 
 # Promtail
 promtail_install: true
 promtail_user: promtail
 # Renovate: datasource=github-tags depName=grafana/loki
-promtail_version: v2.9.5
+promtail_version: v2.9.6
