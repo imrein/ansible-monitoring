@@ -17,7 +17,7 @@
 
     - name: Download loki
       get_url:
-        url: "https://github.com/grafana/loki/releases/download/{{ loki_version }}/loki-linux-amd64.zip"
+        url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
         dest: "{{ download_location }}"
 
     - name: Untar loki

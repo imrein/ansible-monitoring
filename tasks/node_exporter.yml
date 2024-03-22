@@ -10,18 +10,18 @@
 
     - name: Download node_exporter
       get_url:
-        url: "https://github.com/prometheus/node_exporter/releases/download/{{ exporter_version }}/node_exporter-{{ exporter_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
+        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ exporter_version }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
         dest: "{{ download_location }}"
 
     - name: Untar node_exporter
       unarchive:
-        src: "{{ download_location }}/node_exporter-{{ exporter_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
+        src: "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
         remote_src: true
         dest: "{{ download_location }}"
 
     - name: Copy node_exporter binary
       copy: 
-        src: "{{ download_location }}/node_exporter-{{ exporter_version | regex_replace('^.', '') }}.linux-amd64/node_exporter"
+        src: "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
         remote_src: true
         dest: /usr/local/bin/
         mode: '0755'
@@ -41,8 +41,8 @@
         path: "{{ item }}"
         state: absent
       loop:
-        - "{{ download_location }}/node_exporter-{{ exporter_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
-        - "{{ download_location }}/node_exporter-{{ exporter_version | regex_replace('^.', '') }}.linux-amd64"
+        - "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
+        - "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64"
 
     # Edit firewall rules
     - name: Allow incoming traffic on port 9100
