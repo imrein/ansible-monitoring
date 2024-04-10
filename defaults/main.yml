@@ -16,7 +16,7 @@ grafana_package: grafana
 prometheus_install: true
 prometheus_user: prometheus
 # Renovate: datasource=github-tags depName=prometheus/prometheus
-prometheus_version: 2.51.1
+prometheus_version: 2.51.2
 
 # Node_exporter
 exporter_install: true
