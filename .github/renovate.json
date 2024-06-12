@@ -14,7 +14,6 @@
             "prometheus/node_exporter",
             "prometheus/prometheus"
         ],
-        "extractVersion": "^v(?<version>\\d+\\.\\d+\\.\\d+)",
         "matchUpdateTypes": ["minor", "patch"],
         "automerge": true,
         "ignoreTests": true
