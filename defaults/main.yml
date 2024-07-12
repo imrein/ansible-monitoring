@@ -15,23 +15,23 @@ grafana_package: grafana
 # Prometheus
 prometheus_install: true
 prometheus_user: prometheus
-# Renovate: datasource=github-tags depName=prometheus/prometheus
+# Renovate: datasource=github-releases depName=prometheus/prometheus
 prometheus_version: v2.53.1
 
 # Node_exporter
 exporter_install: true
 exporter_user: node_exporter
-# Renovate: datasource=github-tags depName=prometheus/node_exporter
+# Renovate: datasource=github-releases depName=prometheus/node_exporter
 exporter_version: 1.8.1
 
 # Loki
 loki_install: true
 loki_user: loki
-# Renovate: datasource=github-tags depName=grafana/loki
+# Renovate: datasource=github-releases depName=grafana/loki
 loki_version: 3.1.0
 
 # Promtail
 promtail_install: true
 promtail_user: promtail
-# Renovate: datasource=github-tags depName=grafana/loki
+# Renovate: datasource=github-releases depName=grafana/loki
 promtail_version: 3.1.0
