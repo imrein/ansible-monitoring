@@ -22,7 +22,7 @@ prometheus_version: v2.53.1
 exporter_install: true
 exporter_user: node_exporter
 # Renovate: datasource=github-releases depName=prometheus/node_exporter
-exporter_version: 1.8.1
+exporter_version: 1.8.2
 
 # Loki
 loki_install: true
