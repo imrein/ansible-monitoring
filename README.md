@@ -3,7 +3,9 @@
 <p align="center">
 <img src="https://ansible.readthedocs.io/projects/ansible-core/devel/_static/images/Ansible-Mark-RGB_White.png" width=100>
 <img src="https://grafana.com/media/docs/grafana-cloud/infrastructure/grafanalogo.svg" width=90 style="margin: 0 10px;">
+&nbsp;
 <img src="https://github.com/prometheus/prometheus/raw/main/documentation/images/prometheus-logo.svg" width=100 style="margin: 0 5px;">
+&nbsp;
 <img src="https://grafana.com/static/img/logos/logo-loki.svg" width=80>
 </p>
 
