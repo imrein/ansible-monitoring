@@ -43,17 +43,6 @@
         dest: /usr/local/bin/
         mode: '0755'
 
-    - name: Copy consoles to prometheus directory
-      copy:
-        src: "{{ item }}"
-        remote_src: true
-        dest: /etc/prometheus/
-        owner: "{{ prometheus_user }}"
-        group: "{{ prometheus_user }}"
-      loop:
-        - "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64/consoles"
-        - "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64/console_libraries"
-
     - name: Create config file
       copy:
         src: prometheus.yml
