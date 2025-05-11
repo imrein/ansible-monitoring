@@ -1,0 +1,59 @@
+---
+name: Test molecule
+run-name: Testing molecule stuff.
+on: [push]
+
+defaults:
+  run:
+    working-directory: imrein.monitoring
+
+jobs:
+  Linting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v4
+        with:
+          path: 'imrein.monitoring'
+
+      - name: Set up python3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: pip3 install yamllint
+
+      - name: Lint code.
+        run: |
+          yamllint .
+
+  Molecule:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro:
+          - rockylinux9
+          - ubuntu2404
+          - ubuntu2204
+          - debian12
+          - fedora41
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: 'imrein.monitoring'
+
+      - name: Setup python3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies
+        run: pip3 install ansible molecule molecule-plugins[docker] docker
+
+      - name: Run molecule test
+        run: molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
