@@ -3,34 +3,35 @@
 - name: Restart Grafana
   service:
     name: grafana-server
-    enabled: yes
+    enabled: true
     state: restarted
 
 - name: Restart Prometheus
   service:
     name: prometheus
-    enabled: yes
+    enabled: true
     state: restarted
 
 - name: Restart Node_exporter
   service:
     name: node_exporter
-    enabled: yes
+    enabled: true
     state: restarted
 
 - name: Restart Loki
   service:
     name: loki
-    enabled: yes
+    enabled: true
     state: restarted
 
 - name: Restart Promtail
   service:
     name: promtail
-    enabled: yes
+    enabled: true
     state: restarted
 
 - name: Reload firewalld
   service:
     name: firewalld
+    enabled: true
     state: reloaded

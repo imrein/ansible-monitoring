@@ -11,8 +11,8 @@
     - name: Allow incoming traffic on port 3000
       firewalld:
         port: 3000/tcp
-        permanent: yes
-        immediate: yes
+        permanent: true
+        immediate: true
         state: enabled
       notify: Reload firewalld
       when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
@@ -40,7 +40,7 @@
       apt_repository:
         repo: "deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main"
         state: present
-        update_cache: yes
+        update_cache: true
 
     - name: Install grafana package
       apt:

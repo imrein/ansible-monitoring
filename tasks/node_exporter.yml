@@ -20,7 +20,7 @@
         dest: "{{ download_location }}"
 
     - name: Copy node_exporter binary
-      copy: 
+      copy:
         src: "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
         remote_src: true
         dest: /usr/local/bin/
@@ -34,7 +34,7 @@
     # Post installation
     - name: Reload systemd config
       systemd:
-        daemon_reload: yes
+        daemon_reload: true
 
     - name: Cleanup obsolete files
       file:
@@ -48,8 +48,8 @@
     - name: Allow incoming traffic on port 9100
       firewalld:
         port: 9100/tcp
-        permanent: yes
-        immediate: yes
+        permanent: true
+        immediate: true
         state: enabled
       notify: Reload firewalld
       when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
