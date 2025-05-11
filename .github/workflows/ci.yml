@@ -1,6 +1,6 @@
 ---
-name: Test molecule
-run-name: Testing molecule stuff.
+name: CI
+run-name: Molecule testing
 on:
   push:
     branches:

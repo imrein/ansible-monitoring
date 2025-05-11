@@ -9,7 +9,6 @@
         create_home: false
 
     - name: Create promtail directory
-      become: true
       file:
         path: /etc/promtail
         state: directory
