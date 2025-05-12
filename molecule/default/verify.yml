@@ -1,0 +1,103 @@
+---
+- name: Verify Docker Role
+  hosts: all
+  tasks:
+    # Prometheus
+    - name: Verify Prometheus binary is installed
+      command: prometheus --version
+      register: prometheus_version
+      changed_when: false
+      failed_when: prometheus_version.rc != 0
+
+    - name: Show Prometheus version details
+      debug:
+        msg: >
+          Prometheus Version Output:
+          {{ prometheus_version.stdout_lines | join('\n') }}
+
+    - name: Verify Prometheus service is running
+      command: systemctl is-active prometheus
+      register: prometheus_version
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+      failed_when: prometheus_version.stdout.strip() != "active"
+
+    # Grafana
+    - name: Verify Grafana binary is installed
+      command: grafana --version
+      register: grafana_version
+      changed_when: false
+      failed_when: grafana_version.rc != 0
+
+    - name: Show Grafana version details
+      debug:
+        msg: >
+          Grafana Version Output:
+          {{ grafana_version.stdout_lines | join('\n') }}
+
+    - name: Verify Grafana service is running
+      command: systemctl is-active grafana-server
+      register: grafana_version
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+      failed_when: grafana_version.stdout.strip() != "active"
+
+    # Loki
+    - name: Verify Loki binary is installed
+      command: loki --version
+      register: loki_version
+      changed_when: false
+      failed_when: loki_version.rc != 0
+
+    - name: Show Loki version details
+      debug:
+        msg: >
+          Loki Version Output:
+          {{ loki_version.stdout_lines | join('\n') }}
+
+    - name: Verify Loki service is running
+      command: systemctl is-active loki
+      register: loki_version
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+      failed_when: loki_version.stdout.strip() != "active"
+
+    # Node_exporter
+    - name: Verify Node_exporter binary is installed
+      command: node_exporter --version
+      register: node_exporter_version
+      changed_when: false
+      failed_when: node_exporter_version.rc != 0
+
+    - name: Show Node_exporter version details
+      debug:
+        msg: >
+          Node_exporter Version Output:
+          {{ node_exporter_version.stdout_lines | join('\n') }}
+
+    - name: Verify Node_exporter service is running
+      command: systemctl is-active node_exporter
+      register: node_exporter_version
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+      failed_when: node_exporter_version.stdout.strip() != "active"
+
+    # Promtail
+    - name: Verify Promtail binary is installed
+      command: promtail --version
+      register: promtail_version
+      changed_when: false
+      failed_when: promtail_version.rc != 0
+
+    - name: Show Promtail version details
+      debug:
+        msg: >
+          Promtail Version Output:
+          {{ promtail_version.stdout_lines | join('\n') }}
+
+    - name: Verify Promtail service is running
+      command: systemctl is-active promtail
+      register: promtail_version
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+      failed_when: promtail_version.stdout.strip() != "active"
