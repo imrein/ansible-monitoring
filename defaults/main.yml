@@ -9,7 +9,8 @@ packages:
   - unzip
 
 ## Grafana
-grafana_package: grafana
+# Renovate: datasource=github-releases depName=grafana/grafana
+grafana_version: 12.0.2
 
 ## Prometheus
 prometheus_user: prometheus
