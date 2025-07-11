@@ -1,0 +1,31 @@
+---
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: 'http://{{ promtail_loki_server }}:3100/loki/api/v1/push'
+
+scrape_configs:
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: varlogs
+          __path__: /var/log/*log
+
+{% for scrape_config in promtail_scrape_configs %}
+  - job_name: {{ scrape_config.job }}_job
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: {{ scrape_config.job }}
+          host: {{ ansible_hostname }}
+          __path__: {{ scrape_config.path }}
+{% endfor %}
+
