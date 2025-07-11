@@ -15,8 +15,8 @@ Role to setup a new monitoring server. This stack is modular and comes with:
 
 - Grafana
 - Prometheus
-- Node_exporter
 - Loki
+- Node_exporter
 - Promtail
 
 This has been tested on:
@@ -24,6 +24,9 @@ This has been tested on:
 - RHEL based distros
 - Debian
 - Ubuntu
+
+> [!TIP]
+> The testing will be done using [molecule](https://ansible.readthedocs.io/projects/molecule/) and is automated using github-actions.
 
 ## Requirements
 
@@ -35,26 +38,33 @@ The variables are defined in `defaults/main.yml`. These should be configured as 
 
 | Variable | Default | Info |
 | :------- | :------ | :--- |
-| `download_location`             | `/tmp`           | Download location                                 |
-| `packages`                      | `[]`             | General packages that should be installed         |
+| `download_location`               | `/tmp`           | Download location                                 |
+| `packages`                        | `[]`             | General packages that should be installed         |
 | ---      |         |      |
-| `prometheus_install`            | `true`           | Should prometheus be installed?                   |
-| `prometheus_user`               | `prometheus`     | User for prometheus installation                  |
+| `grafana_version`                 | `x.x.x`          | Package version to be installed                   |
+| `grafana_datasources`             | `[]`             | Datasources that should be added                  |
 | ---      |         |      |
-| `exporter_install`              | `true`           | Should node_exporter be installed?                |
-| `exporter_user`                 | `node_exporter`  | User for node_exporter installation               |
-| ---      |         |            |
-| `loki_install`                  | `true`           | Should loki be installed?                         |
-| `loki_user`                     | `loki`           | User for loki installation                        |
+| `prometheus_user`                 | `prometheus`     | User for prometheus installation                  |
+| `prometheus_version`              | `x.x.x`          | Package version to be installed                   |
+| `prometheus_scrape_config_jobs`   | `[]`             | Define scrap jobs                                 |
 | ---      |         |      |
-| `promtail_install`              | `true`           | Should promtail be installed?                     |
-| `promtail_user`                 | `promtail`       | User for promtail installation                    |
-
-## Warnings
-
-The ports can also be changed for more security (might be a future variable).
+| `node_exporter_user`              | `node_exporter`  | User for node_exporter installation               |
+| `node_exporter_version`           | `x.x.x`          | Package version to be installed                   |
+| `node_exporter_architecture`      | `amd64`          | Package architecture                              |
+| ---      |         |              |
+| `loki_user`                       | `loki`           | User for loki installation                        |
+| `loki_version`                    | `x.x.x`          | Package version to be installed                   |
+| ---      |         |      |
+| `promtail_user`                   | `promtail`       | User for promtail installation                    |
+| `promtail_version`                | `x.x.x`          | Package version to be installed                   |
+| `promtail_architecture`           | `amd64`          | Package architecture                              |
+| `promtail_loki_server`            | `127.0.0.1`      | Loki server to ship to                            |
+| `promtail_scrape_configs`         | `[]`             | Files to scrape for logging                       |
 
 ## Example playbook
+
+> [!NOTE]
+> Use [ansible tags](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tags.html#selecting-or-skipping-tags-when-you-run-a-playbook) to select which components to setup. Multiple ones can be selected at once.
 
 ```yml
 ---
@@ -62,5 +72,5 @@ The ports can also be changed for more security (might be a future variable).
   hosts: general
 
   roles:
-  - role: ansible-monitoring
+  - role: ansible-monitoring -b --tags 'prometheus'
 ```
