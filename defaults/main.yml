@@ -1,37 +1,40 @@
 ---
-# General
+## General
 download_location: /tmp
 
-# Packages
+## Packages
 packages:
   - tar
   - wget
   - unzip
 
-# Grafana
-grafana_install: true
+## Grafana
 grafana_package: grafana
 
-# Prometheus
-prometheus_install: true
+## Prometheus
 prometheus_user: prometheus
 # Renovate: datasource=github-releases depName=prometheus/prometheus
 prometheus_version: v3.4.2
 
-# Node_exporter
-exporter_install: true
+## Node_exporter
 exporter_user: node_exporter
 # Renovate: datasource=github-releases depName=prometheus/node_exporter
 exporter_version: 1.9.1
 
-# Loki
-loki_install: true
+## Loki
 loki_user: loki
 # Renovate: datasource=github-releases depName=grafana/loki
 loki_version: 3.5.2
 
-# Promtail
-promtail_install: true
+## Promtail
 promtail_user: promtail
 # Renovate: datasource=github-releases depName=grafana/loki
 promtail_version: 3.5.2
+promtail_architecture: amd64
+
+promtail_loki_server: 127.0.0.1
+promtail_scrape_configs:
+  - job: messages
+    path: /var/log/messages
+  - job: cron
+    path: /var/log/cron
