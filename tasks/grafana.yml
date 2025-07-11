@@ -16,13 +16,13 @@
       file:
         path: /etc/apt/keyrings/
         state: directory
-        mode: 0755
+        mode: '0755'
 
     - name: Import GPG key
       get_url:
         url: https://apt.grafana.com/gpg.key
         dest: /etc/apt/keyrings/grafana.asc
-        mode: 0644
+        mode: '0644'
 
     - name: Add grafana repository
       apt_repository:
@@ -36,3 +36,12 @@
         state: present
       notify: Restart Grafana
   when: ansible_os_family == "Debian" and ansible_facts.services["grafana-server.service"] is not defined
+
+- name: Set datasources
+  template:
+    src: datasource_sample.yml.j2
+    dest: /etc/grafana/provisioning/datasources/sample.yaml
+    owner: root
+    group: grafana
+    mode: '0660'
+  notify: Restart Grafana

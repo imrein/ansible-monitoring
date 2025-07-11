@@ -1,0 +1,13 @@
+---
+# config file version
+apiVersion: 1
+
+datasources:
+{% for ds in grafana_datasources %}
+- name: {{ ds.name }}
+  type: {{ ds.type }}
+  access: {{ ds.access }}
+  orgId: {{ ds.orgId }}
+  url: {{ ds.url }}
+  editable: {{ ds.editable }}
+{% endfor %}
