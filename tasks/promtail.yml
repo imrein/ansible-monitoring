@@ -57,4 +57,3 @@
     group: root
     mode: '0644'
   notify: Restart Promtail
-

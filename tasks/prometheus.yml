@@ -1,89 +1,86 @@
 ---
 # Installing prometheus
-- name: Install prometheus if not installed
-  block:
-    - name: Create prometheus user
-      user:
-        name: "{{ prometheus_user }}"
-        shell: /usr/bin/false
-        create_home: false
+- name: Create prometheus user
+  user:
+    name: "{{ prometheus_user }}"
+    shell: /usr/bin/false
+    create_home: false
 
-    - name: Create prometheus directories
-      file:
-        path: "{{ item }}"
-        state: directory
-        owner: "{{ prometheus_user }}"
-        group: "{{ prometheus_user }}"
-      loop:
-        - /etc/prometheus
-        - /var/lib/prometheus
+- name: Create prometheus directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ prometheus_user }}"
+    group: "{{ prometheus_user }}"
+  loop:
+    - /etc/prometheus
+    - /var/lib/prometheus
 
-    - name: Download prometheus
-      get_url:
-        url: "https://github.com/prometheus/prometheus/releases/download/{{ prometheus_version }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
-        dest: "{{ download_location }}"
+- name: Download prometheus
+  get_url:
+    url: "https://github.com/prometheus/prometheus/releases/download/{{ prometheus_version }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
+    dest: "{{ download_location }}"
 
-    - name: Untar prometheus
-      unarchive:
-        src: "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
-        remote_src: true
-        dest: "{{ download_location }}"
+- name: Untar prometheus
+  unarchive:
+    src: "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
+    remote_src: true
+    dest: "{{ download_location }}"
 
-    - name: Copy prometheus binary
-      copy:
-        src: "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64/prometheus"
-        remote_src: true
-        dest: /usr/local/bin/
-        mode: '0755'
+- name: Copy prometheus binary
+  copy:
+    src: "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64/prometheus"
+    remote_src: true
+    dest: /usr/local/bin/
+    mode: '0755'
 
-    - name: Copy promtool binary
-      copy:
-        src: "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64/promtool"
-        remote_src: true
-        dest: /usr/local/bin/
-        mode: '0755'
+- name: Copy promtool binary
+  copy:
+    src: "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64/promtool"
+    remote_src: true
+    dest: /usr/local/bin/
+    mode: '0755'
 
-    - name: Create config file
-      copy:
-        src: prometheus.yml
-        dest: /etc/prometheus/prometheus.yml
-        owner: "{{ prometheus_user }}"
-        group: "{{ prometheus_user }}"
+- name: Create config file
+  copy:
+    src: prometheus.yml
+    dest: /etc/prometheus/prometheus.yml
+    owner: "{{ prometheus_user }}"
+    group: "{{ prometheus_user }}"
 
-    - name: Create datasource prometheus
-      copy:
-        src: prometheus_datasource.yml
-        dest: /etc/grafana/provisioning/datasources/sample.yaml
+- name: Create datasource prometheus
+  copy:
+    src: prometheus_datasource.yml
+    dest: /etc/grafana/provisioning/datasources/sample.yaml
 
-    - name: Create systemd service for prometheus
-      copy:
-        src: prometheus.service
-        dest: /etc/systemd/system/prometheus.service
+- name: Create systemd service for prometheus
+  copy:
+    src: prometheus.service
+    dest: /etc/systemd/system/prometheus.service
 
-    # Post installation
-    - name: Reload systemd config
-      systemd:
-        daemon_reload: true
+# Post installation
+- name: Reload systemd config
+  systemd:
+    daemon_reload: true
 
-    - name: Cleanup obsolete files
-      file:
-        path: "{{ item }}"
-        state: absent
-      loop:
-        - "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
-        - "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64"
+- name: Cleanup obsolete files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
+    - "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64"
 
-    # Edit firewall rules
-    - name: Allow incoming traffic on port 9090
-      firewalld:
-        port: 9090/tcp
-        permanent: true
-        immediate: true
-        state: enabled
-      notify: Reload firewalld
-      when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
+# Edit firewall rules
+- name: Allow incoming traffic on port 9090
+  firewalld:
+    port: 9090/tcp
+    permanent: true
+    immediate: true
+    state: enabled
+  notify: Reload firewalld
+  when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
 
-    - name: Prometheus enable + restart
-      command: /bin/true
-      notify: Restart Prometheus
-  when: prometheus_install and ansible_facts.services["prometheus.service"] is not defined
+- name: Prometheus enable + restart
+  command: /bin/true
+  notify: Restart Prometheus

@@ -1,74 +1,71 @@
 ---
 # Installing loki
-- name: Install loki if not installed
-  block:
-    - name: Create loki user
-      user:
-        name: "{{ loki_user }}"
-        shell: /usr/bin/false
-        create_home: false
+- name: Create loki user
+  user:
+    name: "{{ loki_user }}"
+    shell: /usr/bin/false
+    create_home: false
 
-    - name: Create loki directory
-      file:
-        path: /etc/loki
-        state: directory
-        owner: "{{ loki_user }}"
-        group: "{{ loki_user }}"
+- name: Create loki directory
+  file:
+    path: /etc/loki
+    state: directory
+    owner: "{{ loki_user }}"
+    group: "{{ loki_user }}"
 
-    - name: Download loki
-      get_url:
-        url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
-        dest: "{{ download_location }}"
+- name: Download loki
+  get_url:
+    url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
+    dest: "{{ download_location }}"
 
-    - name: Untar loki
-      unarchive:
-        src: "{{ download_location }}/loki-linux-amd64.zip"
-        remote_src: true
-        dest: "{{ download_location }}"
+- name: Untar loki
+  unarchive:
+    src: "{{ download_location }}/loki-linux-amd64.zip"
+    remote_src: true
+    dest: "{{ download_location }}"
 
-    - name: Copy loki binary
-      copy:
-        src: "{{ download_location }}/loki-linux-amd64"
-        remote_src: true
-        dest: /usr/local/bin/loki
-        mode: '0755'
+- name: Copy loki binary
+  copy:
+    src: "{{ download_location }}/loki-linux-amd64"
+    remote_src: true
+    dest: /usr/local/bin/loki
+    mode: '0755'
 
-    - name: Create config file
-      copy:
-        src: loki.yml
-        dest: /etc/loki/loki.yml
-        owner: "{{ loki_user }}"
-        group: "{{ loki_user }}"
+- name: Create config file
+  copy:
+    src: loki.yml
+    dest: /etc/loki/loki.yml
+    owner: "{{ loki_user }}"
+    group: "{{ loki_user }}"
 
-    - name: Create systemd service for loki
-      copy:
-        src: loki.service
-        dest: /etc/systemd/system/loki.service
+- name: Create systemd service for loki
+  copy:
+    src: loki.service
+    dest: /etc/systemd/system/loki.service
 
-    # Post installation
-    - name: Reload systemd config
-      systemd:
-        daemon_reload: true
+# Post installation
+- name: Reload systemd config
+  systemd:
+    daemon_reload: true
 
-    - name: Cleanup obsolete files
-      file:
-        path: "{{ item }}"
-        state: absent
-      loop:
-        - "{{ download_location }}/loki-linux-amd64.zip"
-        - "{{ download_location }}/loki-linux-amd64"
+- name: Cleanup obsolete files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ download_location }}/loki-linux-amd64.zip"
+    - "{{ download_location }}/loki-linux-amd64"
 
-    # Edit firewall rules
-    - name: Allow incoming traffic on port 3100
-      firewalld:
-        port: 3100/tcp
-        permanent: true
-        immediate: true
-        state: enabled
-      notify: Reload firewalld
-      when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
+# Edit firewall rules
+- name: Allow incoming traffic on port 3100
+  firewalld:
+    port: 3100/tcp
+    permanent: true
+    immediate: true
+    state: enabled
+  notify: Reload firewalld
+  when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
 
-    - name: Loki enable + restart
-      command: /bin/true
-      notify: Restart Loki
-  when: loki_install and ansible_facts.services["loki.service"] is not defined
+- name: Loki enable + restart
+  command: /bin/true
+  notify: Restart Loki

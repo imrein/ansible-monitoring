@@ -34,15 +34,20 @@
 
 - name: Install grafana
   import_tasks: grafana.yml
+  tags: grafana
 
 - name: Install prometheus
   import_tasks: prometheus.yml
+  tags: prometheus
 
 - name: Install node_exporter
   import_tasks: node_exporter.yml
+  tags: node_exporter
 
 - name: Install loki
   import_tasks: loki.yml
+  tags: loki
 
 - name: Install Promtail
   import_tasks: promtail.yml
+  tags: promtail
