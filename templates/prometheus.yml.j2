@@ -1,0 +1,38 @@
+---
+# File managed by Ansible.
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: prometheus_master
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+          - localhost:9090
+
+  - job_name: node
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+          - localhost:9100
+{% for job in prometheus_scrape_config_jobs %}
+  - job_name: {{ job.job_name }}
+{% if job.honor_labels is defined and job.honor_labels %}
+    honor_labels: true
+{% endif %}
+{% if job.metrics_path is defined %}
+    metrics_path: {{ job.metrics_path }}
+{% endif %}
+{% if job.params is defined %}
+    params:
+      {{ job.params | to_nice_yaml(indent=6) | indent(6) }}
+{% endif %}
+    scrape_interval: {{ job.scrape_interval }}
+    static_configs:
+{% for config in job.static_configs %}
+      - targets:
+{% for target in config.targets %}
+            - {{ target }}
+{% endfor %}
+{% endfor %}
+{% endfor %}

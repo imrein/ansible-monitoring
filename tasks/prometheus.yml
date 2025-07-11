@@ -16,71 +16,47 @@
     - /etc/prometheus
     - /var/lib/prometheus
 
-- name: Download prometheus
-  get_url:
-    url: "https://github.com/prometheus/prometheus/releases/download/{{ prometheus_version }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
-    dest: "{{ download_location }}"
+- name: Get Prometheus version
+  shell: "prometheus --version | grep 'prometheus, version' | cut -d ' ' -f 3"
+  register: prometheus_version_current
+  changed_when: false
+  when: ansible_facts.services["prometheus.service"] is defined
 
-- name: Untar prometheus
-  unarchive:
-    src: "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
-    remote_src: true
-    dest: "{{ download_location }}"
+- name: Install/update Prometheus binary
+  block:
+    - name: Download prometheus gzip
+      get_url:
+        url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+        dest: /tmp
 
-- name: Copy prometheus binary
-  copy:
-    src: "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64/prometheus"
-    remote_src: true
-    dest: /usr/local/bin/
-    mode: '0755'
+    - name: Unzip prometheus
+      unarchive:
+        src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+        remote_src: true
+        dest: /tmp
 
-- name: Copy promtool binary
-  copy:
-    src: "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64/promtool"
-    remote_src: true
-    dest: /usr/local/bin/
-    mode: '0755'
+    - name: Copy prometheus binary
+      copy:
+        src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
+        remote_src: true
+        dest: /usr/local/bin/
+        mode: '0755'
+      notify: Restart Prometheus
+  when: prometheus_version_current is not defined or prometheus_version_current.stdout | default('') != prometheus_version
 
-- name: Create config file
-  copy:
-    src: prometheus.yml
+- name: Create Prometheus config
+  template:
+    src: prometheus.yml.j2
     dest: /etc/prometheus/prometheus.yml
     owner: "{{ prometheus_user }}"
     group: "{{ prometheus_user }}"
-
-- name: Create datasource prometheus
-  copy:
-    src: prometheus_datasource.yml
-    dest: /etc/grafana/provisioning/datasources/sample.yaml
+  notify: Restart Prometheus
 
 - name: Create systemd service for prometheus
   copy:
     src: prometheus.service
     dest: /etc/systemd/system/prometheus.service
-
-# Post installation
-- name: Reload systemd config
-  systemd:
-    daemon_reload: true
-
-- name: Cleanup obsolete files
-  file:
-    path: "{{ item }}"
-    state: absent
-  loop:
-    - "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64.tar.gz"
-    - "{{ download_location }}/prometheus-{{ prometheus_version | regex_replace('^.', '') }}.linux-amd64"
-
-# Edit firewall rules
-- name: Allow incoming traffic on port 9090
-  firewalld:
-    port: 9090/tcp
-    permanent: true
-    immediate: true
-    state: enabled
-  notify: Reload firewalld
-  when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
-
-- name: Prometheus enable + restart
-  command: /bin/true
+    owner: root
+    group: root
+    mode: '0644'
   notify: Restart Prometheus
