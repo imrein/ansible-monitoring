@@ -39,7 +39,7 @@
 
 - name: Set datasources
   template:
-    src: datasource_sample.yml.j2
+    src: grafana_datasources.yml.j2
     dest: /etc/grafana/provisioning/datasources/sample.yaml
     owner: root
     group: grafana
