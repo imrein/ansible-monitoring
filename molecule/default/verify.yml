@@ -24,7 +24,7 @@
 
     # Grafana
     - name: Verify Grafana binary is installed
-      command: grafana --version
+      command: grafana-server --version
       register: grafana_version
       changed_when: false
       failed_when: grafana_version.rc != 0
