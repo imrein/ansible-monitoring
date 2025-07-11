@@ -2,56 +2,51 @@
 # Installing node_exporter
 - name: Create node_exporter user
   user:
-    name: "{{ exporter_user }}"
+    name: "{{ node_exporter_user }}"
     shell: /usr/bin/false
     create_home: false
 
-- name: Download node_exporter
-  get_url:
-    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ exporter_version }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-    dest: "{{ download_location }}"
+- name: Get node_exporter version
+  shell: "node_exporter --version | grep 'node_exporter, version' | cut -d ' ' -f 3"
+  register: node_exporter_version_current
+  changed_when: false
+  when: ansible_facts.services["node_exporter.service"] is defined
 
-- name: Untar node_exporter
-  unarchive:
-    src: "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-    remote_src: true
-    dest: "{{ download_location }}"
+- name: Install/update node_exporter binary
+  block:
+    - name: Download node_exporter
+      get_url:
+        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_architecture }}.tar.gz"
+        dest: /tmp
 
-- name: Copy node_exporter binary
-  copy:
-    src: "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64/node_exporter"
-    remote_src: true
-    dest: /usr/local/bin/
-    mode: '0755'
+    - name: Unzip node_exporter
+      unarchive:
+        src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_architecture }}.tar.gz"
+        remote_src: true
+        dest: /tmp
+
+    - name: Copy node_exporter binary
+      copy:
+        src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_architecture }}/node_exporter"
+        remote_src: true
+        dest: /usr/local/bin/
+        mode: '0755'
+      notify: Restart Node_exporter
+  when: node_exporter_version_current is not defined or node_exporter_version_current.stdout | default('') != node_exporter_version
 
 - name: Create systemd service for node_exporter
   copy:
     src: node_exporter.service
     dest: /etc/systemd/system/node_exporter.service
-
-# Post installation
-- name: Reload systemd config
-  systemd:
-    daemon_reload: true
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Node_exporter
 
 - name: Cleanup obsolete files
   file:
     path: "{{ item }}"
     state: absent
   loop:
-    - "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
-    - "{{ download_location }}/node_exporter-{{ exporter_version }}.linux-amd64"
-
-# Edit firewall rules
-- name: Allow incoming traffic on port 9100
-  firewalld:
-    port: 9100/tcp
-    permanent: true
-    immediate: true
-    state: enabled
-  notify: Reload firewalld
-  when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
-
-- name: Node_exporter enable + restart
-  command: /bin/true
-  notify: Restart Node_exporter
+    - "{{ download_location }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    - "{{ download_location }}/node_exporter-{{ node_exporter_version }}.linux-amd64"

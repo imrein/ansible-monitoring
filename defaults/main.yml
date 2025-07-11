@@ -17,9 +17,10 @@ prometheus_user: prometheus
 prometheus_version: v3.4.2
 
 ## Node_exporter
-exporter_user: node_exporter
+node_exporter_user: node_exporter
 # Renovate: datasource=github-releases depName=prometheus/node_exporter
-exporter_version: 1.9.1
+node_exporter_version: 1.9.1
+node_exporter_architecture: amd64
 
 ## Loki
 loki_user: loki
