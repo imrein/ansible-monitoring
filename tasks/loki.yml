@@ -1,5 +1,7 @@
 ---
-# Installing loki
+- name: Populate service facts
+  service_facts:
+
 - name: Create loki user
   user:
     name: "{{ loki_user }}"
@@ -13,59 +15,47 @@
     owner: "{{ loki_user }}"
     group: "{{ loki_user }}"
 
-- name: Download loki
-  get_url:
-    url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
-    dest: "{{ download_location }}"
+- name: Get Loki version
+  shell: "loki --version | grep 'loki, version' | cut -d ' ' -f 3"
+  register: loki_version_current
+  changed_when: false
+  when: ansible_facts.services["loki.service"] is defined
 
-- name: Untar loki
-  unarchive:
-    src: "{{ download_location }}/loki-linux-amd64.zip"
-    remote_src: true
-    dest: "{{ download_location }}"
+- name: Install/update Loki binary
+  block:
+    - name: Download loki
+      get_url:
+        url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
+        dest: /tmp
 
-- name: Copy loki binary
-  copy:
-    src: "{{ download_location }}/loki-linux-amd64"
-    remote_src: true
-    dest: /usr/local/bin/loki
-    mode: '0755'
+    - name: Unzip loki
+      unarchive:
+        src: /tmp/loki-linux-amd64.zip
+        remote_src: true
+        dest: /tmp
 
-- name: Create config file
-  copy:
-    src: loki.yml
+    - name: Copy loki binary
+      copy:
+        src: /tmp/loki-linux-amd64
+        remote_src: true
+        dest: /usr/local/bin/loki
+        mode: '0755'
+      notify: Restart Loki
+  when: loki_version_current is not defined or loki_version_current.stdout | default('') != loki_version
+
+- name: Create loki config
+  template:
+    src: loki.yml.j2
     dest: /etc/loki/loki.yml
     owner: "{{ loki_user }}"
     group: "{{ loki_user }}"
+  notify: Restart Loki
 
 - name: Create systemd service for loki
   copy:
     src: loki.service
     dest: /etc/systemd/system/loki.service
-
-# Post installation
-- name: Reload systemd config
-  systemd:
-    daemon_reload: true
-
-- name: Cleanup obsolete files
-  file:
-    path: "{{ item }}"
-    state: absent
-  loop:
-    - "{{ download_location }}/loki-linux-amd64.zip"
-    - "{{ download_location }}/loki-linux-amd64"
-
-# Edit firewall rules
-- name: Allow incoming traffic on port 3100
-  firewalld:
-    port: 3100/tcp
-    permanent: true
-    immediate: true
-    state: enabled
-  notify: Reload firewalld
-  when: ansible_os_family == "RedHat" and 'firewalld' in ansible_facts.packages
-
-- name: Loki enable + restart
-  command: /bin/true
+    owner: root
+    group: root
+    mode: '0644'
   notify: Restart Loki
