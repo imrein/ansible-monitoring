@@ -10,6 +10,7 @@
 </p>
 
 ## Overview
+[![CI](https://github.com/imrein/ansible-monitoring/actions/workflows/ci.yml/badge.svg)](https://github.com/imrein/ansible-monitoring/actions/workflows/ci.yml)
 
 Role to setup a new monitoring server. This stack is modular and comes with:
 
