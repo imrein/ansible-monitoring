@@ -10,7 +10,7 @@ packages:
 
 ## Grafana
 # Renovate: datasource=github-releases depName=grafana/grafana
-grafana_version: 12.2.0
+grafana_version: 12.3.0
 grafana_datasources:
   - name: Prometheus
     type: prometheus
