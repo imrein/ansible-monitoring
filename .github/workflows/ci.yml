@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: 'imrein.monitoring'
 
@@ -46,7 +46,7 @@ jobs:
           - fedora41
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: 'imrein.monitoring'
 
