@@ -5,14 +5,6 @@
     shell: /usr/bin/false
     create_home: false
 
-- name: Create fluent-bit directory
-  file:
-    path: /etc/fluent-bit
-    state: directory
-    owner: "{{ fluentbit_user }}"
-    group: "{{ fluentbit_user }}"
-    mode: '0755'
-
 - name: Install fluent-bit on RHEL based system
   block:
     - name: Add fluent-bit repository
@@ -28,6 +20,14 @@
         state: present
       notify: Restart Fluent-bit
   when: ansible_os_family == "RedHat"
+
+- name: Create fluent-bit directory
+  file:
+    path: /etc/fluent-bit
+    state: directory
+    owner: "{{ fluentbit_user }}"
+    group: "{{ fluentbit_user }}"
+    mode: '0755'
 
 - name: Create systemd service for fluent-bit
   copy:
