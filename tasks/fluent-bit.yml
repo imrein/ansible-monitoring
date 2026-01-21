@@ -1,0 +1,37 @@
+---
+- name: Create fluent-bit user
+  user:
+    name: "{{ fluentbit_user }}"
+    shell: /usr/bin/false
+    create_home: false
+
+- name: Create fluent-bit directory
+  file:
+    path: /etc/fluent-bit
+    state: directory
+    owner: "{{ fluentbit_user }}"
+    group: "{{ fluentbit_user }}"
+
+- name: Install fluent-bit on RHEL based system
+  block:
+    - name: Add fluent-bit repository
+      yum_repository:
+        name: fluent-bit
+        description: Fluent-bit repo
+        baseurl: "https://packages.fluentbit.io/almalinux/$releasever/"
+        gpgcheck: no
+
+    - name: Install fluent-bit package
+      dnf:
+        name: "fluent-bit"
+        state: present
+      notify: Restart Fluent-bit
+  when: ansible_os_family == "RedHat"
+
+- name: Create config file
+  template:
+    src: fluent-bit.conf.j2
+    dest: /etc/fluent-bit/fluent-bit.conf
+    owner: "{{ fluentbit_user }}"
+    group: "{{ fluentbit_user }}"
+  notify: Restart Fluent-bit

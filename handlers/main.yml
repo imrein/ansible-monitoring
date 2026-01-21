@@ -24,9 +24,9 @@
     enabled: true
     state: restarted
 
-- name: Restart Promtail
-  service:
-    name: promtail
+- name: Restart Fluent-bit
+  systemd_service:
+    name: fluent-bit
     enabled: true
     state: restarted
 

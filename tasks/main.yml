@@ -48,6 +48,6 @@
   import_tasks: loki.yml
   tags: loki
 
-- name: Install Promtail
-  import_tasks: promtail.yml
-  tags: promtail
+- name: Install fluent-bit
+  import_tasks: fluent-bit.yml
+  tags: fluent-bit

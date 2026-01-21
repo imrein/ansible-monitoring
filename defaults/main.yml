@@ -36,15 +36,28 @@ loki_user: loki
 # Renovate: datasource=github-releases depName=grafana/loki
 loki_version: 3.6.4
 
-## Promtail
-promtail_user: promtail
-# Renovate: datasource=github-releases depName=grafana/loki
-promtail_version: 3.6.4
-promtail_architecture: amd64
+## Fluent-bit
+fluentbit_user: fluentbit
+fluentbit_loki_server: 192.168.129.160
 
-promtail_loki_server: 127.0.0.1
-promtail_scrape_configs:
-  - job: messages
+fluentbit_config_service:
+  - flush: 1
+    log_level: info
+
+fluentbit_config_input:
+  - name: tail
+    path: /var/log/secure
+    tag: vm_secure
+    parser: syslog-rfc3164
+  - name: tail
     path: /var/log/messages
-  - job: cron
-    path: /var/log/cron
+    tag: vm_messages
+    parser: syslog-rfc3164
+
+fluentbit_config_output:
+  - name: loki
+    match: "*"
+    host: "{{ fluentbit_loki_server }}"
+    port: 3100
+    labels: job=fluentbit_vm
+

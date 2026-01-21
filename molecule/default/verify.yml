@@ -82,22 +82,22 @@
       changed_when: false
       failed_when: node_exporter_version.stdout.strip() != "active"
 
-    # Promtail
-    - name: Verify Promtail binary is installed
-      command: promtail --version
-      register: promtail_version
+    # Fluent-bit
+    - name: Verify Fluent-bit binary is installed
+      command: /opt/fluent-bit/bin/fluent-bit --version | cut -d ' ' -f 3
+      register: fluent-bit_version
       changed_when: false
-      failed_when: promtail_version.rc != 0
+      failed_when: fluent-bit_version.rc != 0
 
-    - name: Show Promtail version details
+    - name: Show Fluent-bit version details
       debug:
         msg: >
-          Promtail Version Output:
-          {{ promtail_version.stdout_lines | join('\n') }}
+          Fluent-bit Version Output:
+          {{ fluent-bit_version.stdout_lines | join('\n') }}
 
-    - name: Verify Promtail service is running
-      command: systemctl is-active promtail
-      register: promtail_version
+    - name: Verify Fluent-bit service is running
+      command: systemctl is-active fluent-bit
+      register: fluent-bit_version
       when: ansible_service_mgr == 'systemd'
       changed_when: false
-      failed_when: promtail_version.stdout.strip() != "active"
+      failed_when: fluent-bit_version.stdout.strip() != "active"

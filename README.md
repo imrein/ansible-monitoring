@@ -56,11 +56,12 @@ The variables are defined in `defaults/main.yml`. These should be configured as 
 | `loki_user`                       | `loki`           | User for loki installation                        |
 | `loki_version`                    | `x.x.x`          | Package version to be installed                   |
 | ---      |         |      |
-| `promtail_user`                   | `promtail`       | User for promtail installation                    |
-| `promtail_version`                | `x.x.x`          | Package version to be installed                   |
-| `promtail_architecture`           | `amd64`          | Package architecture                              |
-| `promtail_loki_server`            | `127.0.0.1`      | Loki server to ship to                            |
-| `promtail_scrape_configs`         | `[]`             | Files to scrape for logging                       |
+| `fluentbit_user`                  | `fluentbit`      | User for fluentbit installation                   |
+| `fluentbit_loki_server`           | `127.0.0.1`      | Loki server to ship to                            |
+| `fluentbit_scrape_configs`        | `[]`             | Files to scrape for logging                       |
+| `fluentbit_config_service`        | `[]`             | Config for fluentbit service                      |
+| `fluentbit_config_input`          | `[]`             | Config for fluentbit input                        |
+| `fluentbit_config_output`         | `[]`             | Config for fluentbit output                       |
 
 ## Example playbook
 

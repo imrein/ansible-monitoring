@@ -1,0 +1,29 @@
+# Managed by Ansible
+
+{% for service in fluentbit_config_service %}
+[SERVICE]
+    flush           {{ service.flush }}
+    log_level       {{ service.log_level }}
+    parsers_file    /etc/fluent-bit/parsers.conf
+{% endfor %}
+{% for input in fluentbit_config_input %}
+[INPUT]
+    name    {{ input.name }}
+    path    {{ input.path }}
+    tag     {{ input.tag }}
+    parser  {{ input.parser }}
+{% endfor %}
+{% for output in fluentbit_config_output %}
+[OUTPUT]
+    name    {{ output.name }}
+    match   {{ output.match }}
+{% if output.host is defined %}
+    host    {{ fluentbit_loki_server }}
+{% endif %}
+{% if output.port is defined %}
+    port    {{ output.port }}
+{% endif %}
+{% if output.labels is defined %}
+    labels  {{ output.labels }}
+{% endif %}
+{% endfor %}
