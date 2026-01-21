@@ -18,7 +18,7 @@ Role to setup a new monitoring server. This stack is modular and comes with:
 - Prometheus
 - Loki
 - Node_exporter
-- Promtail
+- Fluent-bit
 
 This has been tested on:
 
