@@ -12,6 +12,7 @@
     state: directory
     owner: "{{ prometheus_user }}"
     group: "{{ prometheus_user }}"
+    mode: '0755'
   loop:
     - /etc/prometheus
     - /var/lib/prometheus
