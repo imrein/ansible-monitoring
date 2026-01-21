@@ -1,0 +1,12 @@
+[Unit]
+Description=Fluent-bit
+After=network.target
+
+[Service]
+User=fluentbit
+Group=fluentbit
+Type=simple
+ExecStart=/opt/fluent-bit/bin/fluent-bit
+
+[Install]
+WantedBy=multi-user.target

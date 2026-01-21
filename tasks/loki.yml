@@ -14,6 +14,7 @@
     state: directory
     owner: "{{ loki_user }}"
     group: "{{ loki_user }}"
+    mode: '0755'
 
 - name: Get Loki version
   shell: "loki --version | grep 'loki, version' | cut -d ' ' -f 3"
