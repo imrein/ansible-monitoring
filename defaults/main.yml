@@ -60,4 +60,3 @@ fluentbit_config_output:
     host: "{{ fluentbit_loki_server }}"
     port: 3100
     labels: job=fluentbit_vm
-
