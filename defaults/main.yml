@@ -34,7 +34,7 @@ node_exporter_architecture: amd64
 ## Loki
 loki_user: loki
 # Renovate: datasource=github-releases depName=grafana/loki
-loki_version: 3.6.4
+loki_version: 3.6.5
 
 ## Fluent-bit
 fluentbit_user: fluentbit
