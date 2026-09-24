@@ -5,7 +5,8 @@
       "matchStrings": [
         "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\n.*_version: (?<currentValue>.*)"
       ],
-        "datasourceTemplate": "github-releases"
+        "datasourceTemplate": "github-releases",
+        "extractVersionTemplate": "^v?(?<version>.*)$"
     }
   ],
   "packageRules": [
