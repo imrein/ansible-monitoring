@@ -22,7 +22,7 @@ grafana_datasources:
 ## Prometheus
 prometheus_user: prometheus
 # Renovate: datasource=github-releases depName=prometheus/prometheus
-prometheus_version: 3.14.0
+prometheus_version: 3.15.0
 prometheus_scrape_config_jobs: []
 
 ## Node_exporter
